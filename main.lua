@@ -26,16 +26,34 @@ function love.load()
 end
 
 function love.update(dt)
+  animate(pacMan, dt)
+  handleDirection(pacMan)
+  pacMan:update(dt)
 end
 
 function love.draw()
   drawMap()
 
   pacMan:draw()
+  love.graphics.print('x: '..pacMan.x.. ' ; y: '..pacMan.y, 10, 10)
 end
 
 function love.keypressed(key, scancode, isRepeat)
+  -- print('tile ',MAP[math.floor( pacMan.y )][math.floor(pacMan.x)])
 
+  if key == 'left' then
+    pacMan:left()
+  end
+  if key == 'right' then 
+    pacMan:right()
+  end
+  if key == 'up' then
+    pacMan:up()
+  end
+  if key == 'down' then
+    pacMan:down()
+  end
+  if key == 'escape' then love.event.quit() end
 end
 
 
@@ -52,6 +70,34 @@ function drawMap()
   end
 end
 
+function animate (this, dt)
+  this.animTimer = this.animTimer - dt
+  if this.animTimer <= 0 then
+    this.animTimer = 1 / this.fps
+    this.keyframe = this.keyframe + 1
+    if this.keyframe > this.nbrFrame then this.keyframe = 1 end
+  end
+end
+
+function handleDirection (this)
+  if this.direction == 'left' then 
+    this.scaleSignX = -1
+    this.scaleSignY = 1
+    this.angle = 0
+  elseif this.direction == 'right' then
+    this.scaleSignX = -1
+    this.scaleSignY = -1
+    this.angle =  math.pi
+  elseif this.direction == 'up' and this == pacMan then
+    this.scaleSignX = -1
+    this.scaleSignY = 1
+    this.angle =  math.pi * 0.5
+  elseif this.direction == 'down' and this == pacMan then
+    this.scaleSignX = -1
+    this.scaleSignY = 1
+    this.angle =  math.pi * 3 * 0.5
+  end
+end
 -- maTable={class="sss",closs="ppp"}
 -- for k,v in ipairs(maTable) do 
 --   print(k,' ; ',v)
