@@ -5,10 +5,10 @@ pacMan =
     score = 0,
     isOnPillEffect = false,
     timer = 0,
-    speed = 8,
+    speed = 6,
     dirX = 0,
     dirY = 0,
-    direction = "left",
+    direction = "start",
     keyframe=1,
     nbrFrame=4,
     fps=10,
@@ -28,6 +28,8 @@ pacMan.sprites = {
 
 
 function pacMan.update(val,dt)
+
+  
   if val.isOnPillEffect == true then
     val.timer = val.timer + dt
     if val.timer >= 8 then
@@ -35,38 +37,34 @@ function pacMan.update(val,dt)
     end
   end
 
-  local rndX = math.floor( val.x )
-  local rndY = math.floor( val.y )
-  local ceilX = math.floor( val.x + 0.5 )
-  local ceilY = math.floor( val.y + 0.5 )
-  -- print(MAP[rndY][rndX])
-  if val.direction == 'left' then
-    if MAP[rndY][ceilX-1] < 8 then
+  local rndX = round (val.x)
+  local rndY = round (val.y)
+
+  if(val.direction=="left") then
+    if MAP[rndY][rndX-1] < 7 then
       val.dirX = 0
-      val.dirY = 0
       val.x = rndX
-      return
     end
-  elseif val.direction == 'right' then
-    if MAP[rndY][rndX+1] < 8 then
+  end
+
+  if(val.direction=="right") then
+    if MAP[rndY][rndX+1] < 7 then
       val.dirX = 0
-      val.dirY = 0
       val.x = rndX
-      return
     end
-  elseif val.direction == 'up' then
-    if MAP[ceilY-1][rndX] < 8 then
-      val.dirX = 0
+  end
+
+  if(val.direction=="up") then
+    if MAP[rndY-1][rndX] < 7 then
       val.dirY = 0
       val.y = rndY
-      return
     end
-  elseif val.direction == 'down' then
-    if MAP[rndY+1][rndX] < 8 then
-      val.dirX = 0
+  end
+
+  if(val.direction=="down") then
+    if MAP[rndY+1][rndX] < 7 then
       val.dirY = 0
       val.y = rndY
-      return
     end
   end
 
@@ -74,24 +72,30 @@ function pacMan.update(val,dt)
   val.y = val.y + dt * val.speed * val.dirY
 
 end
+
+
+
 function pacMan.draw(val)
-  --love.graphics.circle("line", (val.x-1)*BLOCKSIZE*PPM + BLOCKSIZE*PPM*0.5, (val.y-1)*BLOCKSIZE*PPM + BLOCKSIZE*PPM*0.5, BLOCKSIZE*PPM,8)
   love.graphics.draw(val.atlas, val.sprites[val.keyframe],
-    (val.x-1)*BLOCKSIZE*PPM + BLOCKSIZE*PPM*0.5,
-    (val.y-1)*BLOCKSIZE*PPM + BLOCKSIZE*PPM*0.5,
-    val.angle,
-    val.scaleSignX * PPM * 0.8,
-    val.scaleSignY * PPM * 0.8,
-    36*0.5,
-    36*0.5
-  )
-  -- local rndX = math.floor( val.x )
-  -- local rndY = math.floor( val.y )
-  -- love.graphics.rectangle('line',(rndX - 1)*PPM*BLOCKSIZE, (rndY-1)*PPM*BLOCKSIZE, BLOCKSIZE*PPM, BLOCKSIZE*PPM )
-  love.graphics.print('dir: '..val.direction, 10, 20)
+  (val.x-1)*BLOCKSIZE*PPM + BLOCKSIZE*PPM*0.5,
+  (val.y-1)*BLOCKSIZE*PPM + BLOCKSIZE*PPM*0.5,
+  val.angle,
+  val.scaleSignX * PPM * 0.8,
+  val.scaleSignY * PPM * 0.8,
+  36*0.5,
+  36*0.5)
+
+  if(DEBUG) then
+    love.graphics.circle('line', (val.x-1)*BLOCKSIZE*PPM + BLOCKSIZE*PPM*0.5, (val.y-1)*BLOCKSIZE*PPM + BLOCKSIZE*PPM*0.5, BLOCKSIZE*PPM*0.8,8)
+    love.graphics.rectangle('fill', round(val.x-1)*BLOCKSIZE*PPM,round( val.y-1 )*BLOCKSIZE*PPM, BLOCKSIZE*PPM, BLOCKSIZE * PPM )
+    love.graphics.print('dir: '..val.direction, (PPM*VW)+10, 20)
+    love.graphics.print('x: '..pacMan.x.. ' ; y: '..pacMan.y, (VW*PPM)+10, 10)
+  end  
+
 end
+
 function pacMan.init(val)
-  val.x = 15
+  val.x = 14.5
   val.y = 24
   val.isOnPillEffect = false
   val.timer = 0
@@ -109,8 +113,8 @@ function pacMan.collect(val,item)
 end
 
 function pacMan.left(val)
-  local rndX = math.floor( val.x )
-  local rndY = math.floor( val.y )
+  local rndX = round( val.x )
+  local rndY = round( val.y )
   if MAP[rndY][rndX-1] > 7 then
     val.dirX = -1
     val.dirY = 0
@@ -121,8 +125,8 @@ function pacMan.left(val)
 end
 
 function pacMan.right(val)
-  local rndX = math.floor( val.x )
-  local rndY = math.floor( val.y )
+  local rndX = round( val.x )
+  local rndY = round( val.y )
   if MAP[rndY][rndX+1] > 7 then
     val.dirX = 1
     val.dirY = 0
@@ -132,8 +136,8 @@ function pacMan.right(val)
   --val.dirX = 0
 end
 function pacMan.up(val)
-  local rndX = math.floor( val.x )
-  local rndY = math.floor( val.y )
+  local rndX = round( val.x )
+  local rndY = round( val.y )
   if MAP[rndY-1][rndX] > 7 then
     val.dirX = 0
     val.dirY = -1
@@ -143,8 +147,8 @@ function pacMan.up(val)
   --val.dirY = 0
 end
 function pacMan.down(val)
-  local rndX = math.floor( val.x )
-  local rndY = math.floor( val.y )
+  local rndX = round( val.x )
+  local rndY = round( val.y )
   if MAP[rndY+1][rndX] > 7 then
     val.dirX = 0
     val.dirY = 1

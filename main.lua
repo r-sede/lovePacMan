@@ -2,14 +2,15 @@ PPM = 1.5
 VW = 448
 VH = 496
 BLOCKSIZE = 16;
-MAP = nil;
+MAP = nil
 MAPSHEET = {}
-MAPATLAS= nil;
+MAPATLAS= nil
+DEBUG = false
 
 function love.load()
   love.graphics.setDefaultFilter('nearest')
   require"pacMan"
-  love.window.setMode(PPM * VW, PPM * VH)
+  love.window.setMode((PPM * VW) + 300, PPM * VH)
   love.keyboard.setKeyRepeat(true)
   MAP = require('map')
   MAPATLAS = love.graphics.newImage('assets/img/pacmanSpriteSheet.png');
@@ -35,23 +36,43 @@ function love.draw()
   drawMap()
 
   pacMan:draw()
-  love.graphics.print('x: '..pacMan.x.. ' ; y: '..pacMan.y, 10, 10)
+
 end
 
 function love.keypressed(key, scancode, isRepeat)
   -- print('tile ',MAP[math.floor( pacMan.y )][math.floor(pacMan.x)])
 
-  if key == 'left' then
-    pacMan:left()
+
+  if key == 'left'  then
+    if love.keyboard.isDown('lshift') then
+      pacMan.x = pacMan.x - 0.1
+    else
+      pacMan:left()
+    end
+    
   end
-  if key == 'right' then 
-    pacMan:right()
+
+  if key == 'right'  then 
+    if love.keyboard.isDown('lshift') then
+      pacMan.x = pacMan.x + 0.1
+    else
+      pacMan:right()
+    end
   end
-  if key == 'up' then
-    pacMan:up()
+
+  if key == 'up'  then
+    if love.keyboard.isDown('lshift') then
+      pacMan.y = pacMan.y - 0.1
+    else
+      pacMan:up()
+    end
   end
-  if key == 'down' then
-    pacMan:down()
+  if key == 'down'  then
+    if love.keyboard.isDown('lshift') then
+      pacMan.y = pacMan.y + 0.1
+    else
+      pacMan:down()
+    end
   end
   if key == 'escape' then love.event.quit() end
 end
@@ -65,6 +86,21 @@ function drawMap()
       local curChar = MAP[j][i];
       if curChar ~= 7  then
         love.graphics.draw(MAPATLAS,MAPSHEET[curChar],ii*BLOCKSIZE*PPM,jj*BLOCKSIZE*PPM,0,PPM,PPM )
+      end
+    end
+  end
+  
+  if(DEBUG) then
+    for j=1,#MAP do
+      for i=1,#MAP[j] do
+        ii = i-1
+        jj = j-1
+        local curChar = MAP[j][i];
+        if curChar ~= 7  then
+          -- love.graphics.draw(MAPATLAS,MAPSHEET[curChar],ii*BLOCKSIZE*PPM,jj*BLOCKSIZE*PPM,0,PPM,PPM )
+          love.graphics.print(curChar,ii*BLOCKSIZE*PPM,jj*BLOCKSIZE*PPM)
+          love.graphics.rectangle("line",ii*BLOCKSIZE*PPM,jj*BLOCKSIZE*PPM,PPM*BLOCKSIZE,PPM*BLOCKSIZE )
+        end
       end
     end
   end
@@ -102,3 +138,9 @@ end
 -- for k,v in ipairs(maTable) do 
 --   print(k,' ; ',v)
 -- end
+
+function round(val)
+  local floor = math.floor(val)
+  if(val%1 >=0.5 ) then return floor+1 end
+  return floor
+end
