@@ -25,11 +25,8 @@ pacMan.sprites = {
   love.graphics.newQuad(3*36,0,36,36,pacMan.atlas:getDimensions()),
   }
 
-
-
 function pacMan.update(val,dt)
 
-  
   if val.isOnPillEffect == true then
     val.timer = val.timer + dt
     if val.timer >= 8 then
@@ -40,29 +37,36 @@ function pacMan.update(val,dt)
   local rndX = round (val.x)
   local rndY = round (val.y)
 
+  local collectableChar = COLLECTABLE[rndY][rndX]
+    if collectableChar > 0 then
+      COLLECTABLE[rndY][rndX] = 0;
+      val:collect(collectableChar)
+    end
+
+
   if(val.direction=="left") then
-    if MAP[rndY][rndX-1] < 7 then
+    if OBSTACLE[rndY][rndX-1] >0 then
       val.dirX = 0
       val.x = rndX
     end
   end
 
   if(val.direction=="right") then
-    if MAP[rndY][rndX+1] < 7 then
+    if OBSTACLE[rndY][rndX+1] >0 then
       val.dirX = 0
       val.x = rndX
     end
   end
 
   if(val.direction=="up") then
-    if MAP[rndY-1][rndX] < 7 then
+    if OBSTACLE[rndY-1][rndX] >0 then
       val.dirY = 0
       val.y = rndY
     end
   end
 
   if(val.direction=="down") then
-    if MAP[rndY+1][rndX] < 7 then
+    if OBSTACLE[rndY+1][rndX] >0 then
       val.dirY = 0
       val.y = rndY
     end
@@ -88,8 +92,9 @@ function pacMan.draw(val)
   if(DEBUG) then
     love.graphics.circle('line', (val.x-1)*BLOCKSIZE*PPM + BLOCKSIZE*PPM*0.5, (val.y-1)*BLOCKSIZE*PPM + BLOCKSIZE*PPM*0.5, BLOCKSIZE*PPM*0.8,8)
     love.graphics.rectangle('fill', round(val.x-1)*BLOCKSIZE*PPM,round( val.y-1 )*BLOCKSIZE*PPM, BLOCKSIZE*PPM, BLOCKSIZE * PPM )
+    love.graphics.print('x: '..val.x.. ' ; y: '..val.y, (VW*PPM)+10, 10)
+    love.graphics.print('score '..val.score, (VW*PPM)+10, 33)
     love.graphics.print('dir: '..val.direction, (PPM*VW)+10, 20)
-    love.graphics.print('x: '..pacMan.x.. ' ; y: '..pacMan.y, (VW*PPM)+10, 10)
   end  
 
 end
@@ -103,19 +108,23 @@ end
 
 
 function pacMan.collect(val,item)
-  if item == "p" then
+  if item == 8 then
     val.score = val.score + 10
+
     --reagarder si on gagne une vie
-  elseif item == "0" then
+  elseif item == 9 then
+    val.score = val.score + 10
     val.isOnPillEffect = true
     val.timer = 0
   end
+
+
 end
 
 function pacMan.left(val)
   local rndX = round( val.x )
   local rndY = round( val.y )
-  if MAP[rndY][rndX-1] > 7 then
+  if OBSTACLE[rndY][rndX-1] == 0 then
     val.dirX = -1
     val.dirY = 0
     val.y = rndY
@@ -127,7 +136,7 @@ end
 function pacMan.right(val)
   local rndX = round( val.x )
   local rndY = round( val.y )
-  if MAP[rndY][rndX+1] > 7 then
+  if OBSTACLE[rndY][rndX+1] == 0 then
     val.dirX = 1
     val.dirY = 0
     val.y = rndY
@@ -138,7 +147,7 @@ end
 function pacMan.up(val)
   local rndX = round( val.x )
   local rndY = round( val.y )
-  if MAP[rndY-1][rndX] > 7 then
+  if OBSTACLE[rndY-1][rndX] == 0 then
     val.dirX = 0
     val.dirY = -1
     val.x = rndX
@@ -149,7 +158,7 @@ end
 function pacMan.down(val)
   local rndX = round( val.x )
   local rndY = round( val.y )
-  if MAP[rndY+1][rndX] > 7 then
+  if OBSTACLE[rndY+1][rndX] == 0 then
     val.dirX = 0
     val.dirY = 1
     val.x = rndX

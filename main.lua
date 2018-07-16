@@ -12,7 +12,9 @@ function love.load()
   require"pacMan"
   love.window.setMode((PPM * VW) + 300, PPM * VH)
   love.keyboard.setKeyRepeat(true)
-  MAP = require('map')
+  local getMaps = require('map')
+  MAP,OBSTACLE,COLLECTABLE = getMaps('map')
+  
   MAPATLAS = love.graphics.newImage('assets/img/pacmanSpriteSheet.png');
   MAPSHEET[1] = love.graphics.newQuad(0*16, 0, 16, 16, MAPATLAS:getDimensions())
   MAPSHEET[2] = love.graphics.newQuad(1*16, 0, 16, 16, MAPATLAS:getDimensions())
@@ -34,22 +36,17 @@ end
 
 function love.draw()
   drawMap()
-
   pacMan:draw()
-
 end
 
 function love.keypressed(key, scancode, isRepeat)
   -- print('tile ',MAP[math.floor( pacMan.y )][math.floor(pacMan.x)])
-
-
   if key == 'left'  then
     if love.keyboard.isDown('lshift') then
       pacMan.x = pacMan.x - 0.1
     else
       pacMan:left()
     end
-    
   end
 
   if key == 'right'  then 
@@ -67,6 +64,7 @@ function love.keypressed(key, scancode, isRepeat)
       pacMan:up()
     end
   end
+
   if key == 'down'  then
     if love.keyboard.isDown('lshift') then
       pacMan.y = pacMan.y + 0.1
@@ -74,6 +72,7 @@ function love.keypressed(key, scancode, isRepeat)
       pacMan:down()
     end
   end
+
   if key == 'escape' then love.event.quit() end
 end
 
@@ -86,6 +85,10 @@ function drawMap()
       local curChar = MAP[j][i];
       if curChar >0   then
         love.graphics.draw(MAPATLAS,MAPSHEET[curChar],ii*BLOCKSIZE*PPM,jj*BLOCKSIZE*PPM,0,PPM,PPM )
+      end
+      local collectChar = COLLECTABLE[j][i]
+      if collectChar >0   then
+        love.graphics.draw(MAPATLAS,MAPSHEET[collectChar],ii*BLOCKSIZE*PPM,jj*BLOCKSIZE*PPM,0,PPM,PPM )
       end
     end
   end
@@ -101,6 +104,7 @@ function drawMap()
           love.graphics.print(curChar,ii*BLOCKSIZE*PPM,jj*BLOCKSIZE*PPM)
           love.graphics.rectangle("line",ii*BLOCKSIZE*PPM,jj*BLOCKSIZE*PPM,PPM*BLOCKSIZE,PPM*BLOCKSIZE )
         end
+      
       end
     end
   end
