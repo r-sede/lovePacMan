@@ -84,7 +84,7 @@ function drawMap()
       ii = i-1
       jj = j-1
       local curChar = MAP[j][i];
-      if curChar ~= 7  then
+      if curChar >0   then
         love.graphics.draw(MAPATLAS,MAPSHEET[curChar],ii*BLOCKSIZE*PPM,jj*BLOCKSIZE*PPM,0,PPM,PPM )
       end
     end
@@ -96,7 +96,7 @@ function drawMap()
         ii = i-1
         jj = j-1
         local curChar = MAP[j][i];
-        if curChar ~= 7  then
+        if curChar>0  then
           -- love.graphics.draw(MAPATLAS,MAPSHEET[curChar],ii*BLOCKSIZE*PPM,jj*BLOCKSIZE*PPM,0,PPM,PPM )
           love.graphics.print(curChar,ii*BLOCKSIZE*PPM,jj*BLOCKSIZE*PPM)
           love.graphics.rectangle("line",ii*BLOCKSIZE*PPM,jj*BLOCKSIZE*PPM,PPM*BLOCKSIZE,PPM*BLOCKSIZE )
