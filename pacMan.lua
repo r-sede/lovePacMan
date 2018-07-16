@@ -5,7 +5,8 @@ pacMan =
     score = 0,
     isOnPillEffect = false,
     timer = 0,
-    speed = 6,
+    speed = 8,
+    speedCoef = 0.8,
     dirX = 0,
     dirY = 0,
     direction = "start",
@@ -13,8 +14,8 @@ pacMan =
     nbrFrame=4,
     fps=10,
     angle=0,
-    scaleSignX= 1;
-    scaleSignY= 1;
+    scaleSignX= 1,
+    scaleSignY= 1
   }
 pacMan.animTimer = 1 /pacMan.fps
 pacMan.atlas= love.graphics.newImage('assets/img/pacManLana.png');
@@ -72,8 +73,8 @@ function pacMan.update(val,dt)
     end
   end
 
-  val.x = val.x + dt * val.speed * val.dirX
-  val.y = val.y + dt * val.speed * val.dirY
+  val.x = val.x + dt * val.speed * val.speedCoef * val.dirX
+  val.y = val.y + dt * val.speed * val.speedCoef * val.dirY
 
 end
 
@@ -110,13 +111,14 @@ end
 function pacMan.collect(val,item)
   if item == 8 then
     val.score = val.score + 10
-
+    
     --reagarder si on gagne une vie
   elseif item == 9 then
-    val.score = val.score + 10
+    val.score = val.score + 50
     val.isOnPillEffect = true
     val.timer = 0
   end
+  DOTS = DOTS - 1
 
 
 end

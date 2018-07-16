@@ -6,10 +6,12 @@ MAP = nil
 MAPSHEET = {}
 MAPATLAS= nil
 DEBUG = false
+DOTS = 244
 
 function love.load()
   love.graphics.setDefaultFilter('nearest')
   require"pacMan"
+  require"ghosts"
   love.window.setMode((PPM * VW) + 300, PPM * VH)
   love.keyboard.setKeyRepeat(true)
   local getMaps = require('map')
@@ -30,13 +32,18 @@ end
 
 function love.update(dt)
   animate(pacMan, dt)
+  animate(g_red, dt)
+
   handleDirection(pacMan)
+  handleDirection(g_red)
   pacMan:update(dt)
+  g_red:update(dt)
 end
 
 function love.draw()
   drawMap()
   pacMan:draw()
+  g_red:draw()
 end
 
 function love.keypressed(key, scancode, isRepeat)
@@ -74,6 +81,10 @@ function love.keypressed(key, scancode, isRepeat)
   end
 
   if key == 'escape' then love.event.quit() end
+  if key == 'q' then g_red.direction = "left" end
+  if key == 'd' then g_red.direction = "right" end
+  if key == 'z' then g_red.direction = "up" end
+  if key == 's' then g_red.direction = "down" end
 end
 
 
@@ -147,4 +158,10 @@ function round(val)
   local floor = math.floor(val)
   if(val%1 >=0.5 ) then return floor+1 end
   return floor
+end
+
+function getTile(arr, x , y)
+  local res = arr[y][x]
+  if res then return res end
+  print('index error x: '..x..' ;y: '..y )
 end
