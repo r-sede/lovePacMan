@@ -1,5 +1,32 @@
+local function getNextTileObs(val)
+  if val.direction == "left" then
+    return getTile(OBSTACLE, round(val.x) -1, round(val.y))
+  elseif val.direction == 'right' then
+    return getTile(OBSTACLE, round(val.x) +1, round(val.y))
+  elseif val.direction == 'up' then 
+    return getTile(OBSTACLE, round(val.x), round(val.y)-1)
+  elseif val.direction == 'down' then 
+    return getTile(OBSTACLE, round(val.x), round(val.y)+1)
+  end
+end
+
+local function getNextTile(val)
+  if val.direction == "left" then
+  elseif val.direction == 'right' then
+    return round(val.x) +1, round(val.y)
+  elseif val.direction == 'up' then 
+    return round(val.x), round(val.y)-1
+  elseif val.direction == 'down' then 
+    return round(val.x), round(val.y)+1
+  end
+end
+
+local frightAtlas = love.graphics.newImage('assets/img/fantomesPacman5.png')
+
+
 local function update(val, dt)
   if love.keyboard.isDown('x') then val.state = "fright" else val.state = "chase" end
+
   if val.state == "fright" then
     val.curAtlas = "frightAtlas"
     val.animDir = "fright"
@@ -7,6 +34,8 @@ local function update(val, dt)
     val.curAtlas = "atlas"
     val.animDir = val.direction
   end
+
+  local nextTileX, nextTileY = getNextTile(val);
 
   val.x = val.x + dt * val.speed * val.speedCoef * val.dirX
   val.y = val.y + dt * val.speed * val.speedCoef * val.dirY
@@ -28,19 +57,12 @@ local function setTarget(val, x,y)
   val.targetY = y
 end
 
-local function getNextTile(val)
-  if val.direction == "left" then
-    return getTile(OBSTACLE, round(val.x) -1, round(val.y))
-  elseif val.direction == 'right' then
-    return getTile(OBSTACLE, round(val.x) +1, round(val.y))
-  elseif val.direction == 'up' then 
-    return getTile(OBSTACLE, round(val.x), round(val.y)-1)
-  elseif val.direction == 'down' then 
-    return getTile(OBSTACLE, round(val.x), round(val.y)+1)
-  end
+local function distance ( x1, y1, x2, y2 )
+  local dx = x1 - x2
+  local dy = y1 - y2
+  return math.sqrt ( dx * dx + dy * dy )
 end
 
-local frightAtlas = love.graphics.newImage('assets/img/fantomesPacman5.png')
 ---------------------------------------------------------------------------
 ---------------------------------RED---------------------------------------
 
@@ -62,9 +84,10 @@ g_red = {
     scaleSignX= 1,
     scaleSignY= 1,
     state = "chase",
-    targetX = 1,
-    targetY = 1,
+    targetX = 2,
+    targetY = 2,
     speedCoef = 0.5,
+    nextDecision = "up",
   }
   g_red.animTimer = 1 /g_red.fps
   g_red.atlas= love.graphics.newImage('assets/img/fantomesPacman4.png')

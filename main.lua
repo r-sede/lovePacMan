@@ -165,3 +165,12 @@ function getTile(arr, x , y)
   if res then return res end
   print('index error x: '..x..' ;y: '..y )
 end
+
+function getSurTiles(x,y)
+  return {
+    up = getTile(OBSTACLE,x, y - 1),
+    left = getTile(OBSTACLE, x - 1, y),
+    down = getTile(OBSTACLE, x, y + 1),
+    right = getTile(OBSTACLE, x + 1, y),
+  }
+end
