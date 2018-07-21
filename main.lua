@@ -1,11 +1,11 @@
-PPM = 1.5
+PPM = 1
 VW = 448
-VH = 496
+VH = 576
 BLOCKSIZE = 16;
 MAP = nil
 MAPSHEET = {}
 MAPATLAS= nil
-DEBUG = false
+DEBUG = true
 DOTS = 244
 
 function love.load()

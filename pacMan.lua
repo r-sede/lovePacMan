@@ -1,6 +1,6 @@
 pacMan = 
   {
-    x = 14.5, y = 24,
+    x = 14.5, y = 24+3,
     life = 3,
     score = 0,
     isOnPillEffect = false,
