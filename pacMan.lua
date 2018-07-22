@@ -117,6 +117,8 @@ function pacMan.collect(val,item)
     val.score = val.score + 50
     val.isOnPillEffect = true
     val.timer = 0
+    g_red.timer = 0
+    setState(g_red, 'fright')
   end
   DOTS = DOTS - 1
 

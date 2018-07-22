@@ -1,4 +1,4 @@
-local function setState(val, state)
+function setState(val, state)
   val.state = state
   local res = ''
   if val.direction == 'up' then
@@ -211,17 +211,25 @@ end
 g_red.update = function(val, dt)
   val.timer = val.timer  + dt
   if val.state == 'chase' then
+    val.speedCoef = 0.75
     val.targetX, val.targetY = round(pacMan.x), round(pacMan.y)
     if val.timer >= 20 then
       val.timer = 0
       setState(val, 'scatter')
     end
   elseif val.state == 'scatter' then
+    val.speedCoef = 0.75
     if val.timer >= 7 then
       val.timer = 0
       setState(val, 'chase')
     end
     val.targetX, val.targetY = 25, 1
+  elseif val.state == 'fright' then
+    val.speedCoef = 0.5
+    if val.timer >= 6 then
+      val.timer = 0
+      setState(val, 'chase')
+    end
   end
   update(val, dt)
 end
