@@ -9,7 +9,7 @@ DEBUG = true
 DOTS = 244
 
 function love.load(arg)
-
+  love.math.setRandomSeed(love.timer.getTime())
   love.graphics.setDefaultFilter('nearest')
   require"pacMan"
   require"ghosts"

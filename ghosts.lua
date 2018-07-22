@@ -1,9 +1,20 @@
-local function setTarget(val, x,y)
-  val.targetX = x
-  val.targetY = y
+local function setState(val, state)
+  val.state = state
+  local res = ''
+  if val.direction == 'up' then
+    res = 'down'
+  elseif val.direction == 'right' then
+    res = 'left'
+  elseif val.direction == 'down' then
+    res = 'up'
+  else
+    res = 'right'
+  end
+  val.nextDecision = res
 end
 
-local function distance ( x1, y1, x2, y2 )
+
+local function distance (x1, y1, x2, y2 )
   local dx = x1 - x2
   local dy = y1 - y2
   return math.sqrt ( dx * dx + dy * dy )
@@ -39,18 +50,19 @@ local function getSurTile(x,y)
   }
 end
 
-local function howManyExit(arr)
-  local res = 0
-  for i=1,4 do
-    if(arr[i] == 0) then res = res + 1 end
-  end
-  return res
-end
 
-local function update(val, dt)
+local function update (val, dt)
   
+  if val.state == 'fright' then
+    val.curAtlas = 'frightAtlas'
+    val.animDir ='fright'
+  else
+    val.curAtlas = 'atlas'
+    val.animDir = val.direction
+  end
+
   if round(val.x) == val.nextX and round(val.y) == val.nextY then
-    val.targetX, val.targetY = round(pacMan.x), round(pacMan.y)
+
     val.direction = val.nextDecision
 
     local nX, nY = getNextTile(val)
@@ -75,7 +87,14 @@ local function update(val, dt)
         end
       until true
     end
-    table.sort(dist, function(a,b) return a.dist < b.dist end)
+    if val.state == 'fright' then
+      table.sort(dist, function(a,b)
+        local aa = love.math.random()
+        return aa%2 > 1 
+      end)
+    else
+      table.sort(dist, function(a,b) return a.dist < b.dist end)
+    end
     val.nextX = nX
     val.nextY = nY
     val.nextDecision = dist[1].dir
@@ -100,14 +119,14 @@ local function update(val, dt)
       val.dirX= 0
       val.dirY = 1
   end
+
+  val.animDir = val.direction
   val.x = val.x + dt * val.speed * val.speedCoef * val.dirX
   val.y = val.y + dt * val.speed * val.speedCoef * val.dirY
 
 end
 
-
-
-local function draw(val)
+local function draw (val)
   love.graphics.draw(val[val.curAtlas], val.sprites[val.animDir][val.keyframe],
   (val.x-1)*BLOCKSIZE*PPM + BLOCKSIZE*PPM*0.5,
   (val.y-1)*BLOCKSIZE*PPM + BLOCKSIZE*PPM*0.5,
@@ -119,12 +138,13 @@ local function draw(val)
   local r, g, b, a = love.graphics.getColor()
   -- print('rgba: '..r..', '..g..', '..b..', '..a)
   if DEBUG then 
-    love.graphics.setColor(1,0,0,0.7)
+    love.graphics.setColor(val.color.r,val.color.g,val.color.b,val.color.a)
     love.graphics.rectangle('fill',(val.targetX-1)*BLOCKSIZE*PPM , (val.targetY-1)*BLOCKSIZE*PPM, BLOCKSIZE*PPM, BLOCKSIZE*PPM)
     love.graphics.print('x: '..val.x..'; y: '..val.y, (VW*PPM)+10, 45)
     love.graphics.print('dir: '..val.direction, (VW*PPM)+10, 60)
     love.graphics.print('nextX: '..val.nextX..'; nextY: '..val.nextY, (VW*PPM)+10, 75)
     love.graphics.print('nextDecision: '..val.nextDecision, (VW*PPM)+10, 90)
+    love.graphics.print('state: '..val.state, (VW*PPM)+10, 105)
     love.graphics.setColor(1,1,1,1)
   end
 end
@@ -134,11 +154,11 @@ end
 ---------------------------------RED---------------------------------------
 
 g_red = {
-    startX=15, startY=12+3,
-    x=15, y=12+3,
+    startX=14.5, startY=12+3,
+    x=14.5, y=12+3,
     timer = 0,
     speed = 8,
-
+    color = {r=1, g=0, b=0, a=0.7},
     dirX = 0,
     dirY = 0,
     direction = "right",
@@ -150,10 +170,10 @@ g_red = {
     angle=0,
     scaleSignX= 1,
     scaleSignY= 1,
-    state = "chase",
+    state = "scatter",
     targetX = 25,
     targetY = 1,
-    speedCoef = 0.8,
+    speedCoef = 0.75,
     nextDecision = "right",
     nextX = 16,
     nextY = 12+3
@@ -189,12 +209,24 @@ g_red.draw = function(val)
 end
 
 g_red.update = function(val, dt)
+  val.timer = val.timer  + dt
+  if val.state == 'chase' then
+    val.targetX, val.targetY = round(pacMan.x), round(pacMan.y)
+    if val.timer >= 20 then
+      val.timer = 0
+      setState(val, 'scatter')
+    end
+  elseif val.state == 'scatter' then
+    if val.timer >= 7 then
+      val.timer = 0
+      setState(val, 'chase')
+    end
+    val.targetX, val.targetY = 25, 1
+  end
   update(val, dt)
 end
 
-g_red.setTarget = function(val, x,y)
-  setTarget(val, x, y)
-end
+
 
 g_red.getNextTile = function(val)
   getNextTile(val)
