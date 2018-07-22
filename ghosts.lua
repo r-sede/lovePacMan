@@ -14,6 +14,7 @@ local frightAtlas = love.graphics.newImage('assets/img/fantomesPacman5.png')
 local function getNextTile(val)
   local rndX, rndY = round(val.x), round(val.y) 
   if val.direction == "left" then
+    return rndX -1, rndY
   elseif val.direction == 'right' then
     return rndX +1, rndY
   elseif val.direction == 'up' then 
@@ -46,87 +47,46 @@ local function howManyExit(arr)
   return res
 end
 
-local function update2(val, dt)
-
-  if round(val.x) == val.nextX and round(val.y) == val.nextY then
-    val.direction = val.nextDecision
-
-  end
-
-end
-
 local function update(val, dt)
-  --print('update')
-  if love.keyboard.isDown('x') then val.state = "fright" else val.state = "chase" end
-
-  if val.state == "fright" then
-    val.curAtlas = "frightAtlas"
-    val.animDir = "fright"
-  else
-    val.curAtlas = "atlas"
-    val.animDir = val.direction
-  end
+  
   if round(val.x) == val.nextX and round(val.y) == val.nextY then
-    -- print('yes')
+    val.targetX, val.targetY = round(pacMan.x), round(pacMan.y)
     val.direction = val.nextDecision
-    local nextTile = getNextTileObs(val)
-    if nextTile == 0 then
-      local nX, nY = getNextTile(val)
-      local surTile = getSurTile(nX, nY);
-      local nbrExit = howManyExit(surTile)
-      -- print(nbrExit)
-      if nbrExit == -1 then 
-        val.nextDecision = val.direction
-      elseif nbrExit > 1 then
-        dist = {}
-        for i=1, #surTile do
-          if surTile[i] == 0 then
-            if i == 1 then
-              dist[1] = { dist = math.abs(distance(val.targetX, val.targetY, nX, nY-1)), x=nX,y=nY-1, dir="up" }
-              -- if val.direction == 'down' then dist[4] = nil end
-            elseif i == 2 then
-              dist[2] = { dist= math.abs(distance(val.targetX, val.targetY, nX+1, nY)), x=nX+1,y=nY, dir="right"}
-              -- if val.direction == 'left' then dist[4] = nil end
-            elseif i == 3 then
-              dist[3] = { dist = math.abs(distance(val.targetX, val.targetY, nX, nY+1)), x=nX, y=nY+1, dir ="down"}
-              -- if val.direction == 'up' then dist[4] = nil end
-            elseif i == 4 then
-              dist[4] = { dist = math.abs(distance(val.targetX, val.targetY, nX-1, nY)), x=nX-1, y=nY, dir="left"}
-              -- if val.direction == 'right' then dist[4] = nil end
-            end
-          end
-        end
-        local nilIndex = {}
-        for i=1,#dist do 
-          if dist[i] == nil then table.insert(nilIndex, i) end
-        end
 
-        for i=1,#nilIndex do
-          table.remove(dist, nilIndex[i])
+    local nX, nY = getNextTile(val)
+    local surObst = getSurTile(nX,nY)
+    -- print(nX, nY)
+    local dist = {}
+    for i=1,#surObst do
+      repeat
+        if surObst[i] == 1 then break end -- == continue
+        if i == 1 and val.direction == 'down' then break end
+        if i == 2 and val.direction == 'left' then break end
+        if i == 3 and val.direction == 'up' then break end
+        if i == 4 and val.direction == 'right' then break end
+        if i == 1 then
+          table.insert(dist, { dist = math.abs(distance(val.targetX, val.targetY, nX, nY-1)), x=nX,y=nY-1, dir="up" })
+        elseif i == 2 then
+          table.insert(dist, { dist= math.abs(distance(val.targetX, val.targetY, nX+1, nY)), x=nX+1,y=nY, dir="right"})
+        elseif i == 3 then
+          table.insert(dist, { dist = math.abs(distance(val.targetX, val.targetY, nX, nY+1)), x=nX, y=nY+1, dir ="down"})
+        elseif i == 4 then
+          table.insert(dist, { dist = math.abs(distance(val.targetX, val.targetY, nX-1, nY)), x=nX-1, y=nY, dir="left"})
         end
-
-
-        table.sort(dist, function(a,b) return a.dist < b.dist end)
-        local indexOfShort = 1
-        
-        -- val.nextX = dist[indexOfShort].x
-        -- val.nextY = dist[indexOfShort].y
-        --local nX, nY = getNextTile(val)
-        val.nextX = nX
-        val.nextY = nY
-        --debug.debug()
-        -- if(nX == nil) then print('nx nil')
-        -- elseif nY == nil then print('ny nil')
-        -- elseif dist[indexOfShort].dir == nil then print('dist[indexOfShort].dir nil')
-        -- end
-        --print(nX, nY, dist[indexOfShort].dir)
-        val.nextDecision = dist[indexOfShort].dir
-        -- print(val.nextDecision)
-      end
+      until true
     end
+    table.sort(dist, function(a,b) return a.dist < b.dist end)
+    val.nextX = nX
+    val.nextY = nY
+    val.nextDecision = dist[1].dir
   end
 
-
+  if val.direction == 'left' or val.direction == 'right' then
+    if val.y%1 ~= 0 then val.y = round(val.y)end
+  elseif val.direction == 'up' or val.direction == 'down' then
+    if val.x%1 ~= 0 then val.x = round(val.x)end
+  end
+  
   if val.direction == 'left' then
     val.dirX= -1
     val.dirY = 0
@@ -142,7 +102,10 @@ local function update(val, dt)
   end
   val.x = val.x + dt * val.speed * val.speedCoef * val.dirX
   val.y = val.y + dt * val.speed * val.speedCoef * val.dirY
+
 end
+
+
 
 local function draw(val)
   love.graphics.draw(val[val.curAtlas], val.sprites[val.animDir][val.keyframe],

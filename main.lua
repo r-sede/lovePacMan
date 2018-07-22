@@ -9,7 +9,7 @@ DEBUG = true
 DOTS = 244
 
 function love.load(arg)
-if arg[#arg] == '-debug' then require("mobdebug").start() end
+
   love.graphics.setDefaultFilter('nearest')
   require"pacMan"
   require"ghosts"
@@ -27,14 +27,11 @@ if arg[#arg] == '-debug' then require("mobdebug").start() end
   MAPSHEET[6] = love.graphics.newQuad(5*16, 0, 16, 16, MAPATLAS:getDimensions())
   MAPSHEET[9] = love.graphics.newQuad(6*16, 0, 16, 16, MAPATLAS:getDimensions())
   MAPSHEET[8] = love.graphics.newQuad(7*16, 0, 16, 16, MAPATLAS:getDimensions())
-
-  
 end
 
 function love.update(dt)
   animate(pacMan, dt)
   animate(g_red, dt)
-
   handleDirection(pacMan)
   handleDirection(g_red)
   pacMan:update(dt)
@@ -112,7 +109,6 @@ function drawMap()
         jj = j-1
         local curChar = MAP[j][i];
         if curChar>0  then
-          -- love.graphics.draw(MAPATLAS,MAPSHEET[curChar],ii*BLOCKSIZE*PPM,jj*BLOCKSIZE*PPM,0,PPM,PPM )
           love.graphics.print(curChar,ii*BLOCKSIZE*PPM,jj*BLOCKSIZE*PPM)
           love.graphics.rectangle("line",ii*BLOCKSIZE*PPM,jj*BLOCKSIZE*PPM,PPM*BLOCKSIZE,PPM*BLOCKSIZE )
         end
