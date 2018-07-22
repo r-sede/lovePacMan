@@ -46,8 +46,17 @@ local function howManyExit(arr)
   return res
 end
 
+local function update2(val, dt)
+
+  if round(val.x) == val.nextX and round(val.y) == val.nextY then
+    val.direction = val.nextDecision
+
+  end
+
+end
 
 local function update(val, dt)
+  --print('update')
   if love.keyboard.isDown('x') then val.state = "fright" else val.state = "chase" end
 
   if val.state == "fright" then
@@ -65,24 +74,24 @@ local function update(val, dt)
       local nX, nY = getNextTile(val)
       local surTile = getSurTile(nX, nY);
       local nbrExit = howManyExit(surTile)
-      print(nbrExit)
+      -- print(nbrExit)
       if nbrExit == -1 then 
         val.nextDecision = val.direction
       elseif nbrExit > 1 then
-        local dist = {}
+        dist = {}
         for i=1, #surTile do
           if surTile[i] == 0 then
             if i == 1 then
               dist[1] = { dist = math.abs(distance(val.targetX, val.targetY, nX, nY-1)), x=nX,y=nY-1, dir="up" }
               -- if val.direction == 'down' then dist[4] = nil end
             elseif i == 2 then
-              dist[2] = {dist= math.abs(distance(val.targetX, val.targetY, nX+1, nY)), x=nX+1,y=nY, dir="right"}
+              dist[2] = { dist= math.abs(distance(val.targetX, val.targetY, nX+1, nY)), x=nX+1,y=nY, dir="right"}
               -- if val.direction == 'left' then dist[4] = nil end
             elseif i == 3 then
-              dist[3] = {dist = math.abs(distance(val.targetX, val.targetY, nX, nY+1)), x=nX, y=nY+1, dir ="down"}
+              dist[3] = { dist = math.abs(distance(val.targetX, val.targetY, nX, nY+1)), x=nX, y=nY+1, dir ="down"}
               -- if val.direction == 'up' then dist[4] = nil end
             elseif i == 4 then
-              dist[4] = {dist = math.abs(distance(val.targetX, val.targetY, nX-1, nY)), x=nX-1, y=nY, dir="left"}
+              dist[4] = { dist = math.abs(distance(val.targetX, val.targetY, nX-1, nY)), x=nX-1, y=nY, dir="left"}
               -- if val.direction == 'right' then dist[4] = nil end
             end
           end
@@ -96,20 +105,21 @@ local function update(val, dt)
           table.remove(dist, nilIndex[i])
         end
 
+
         table.sort(dist, function(a,b) return a.dist < b.dist end)
         local indexOfShort = 1
-
+        
         -- val.nextX = dist[indexOfShort].x
         -- val.nextY = dist[indexOfShort].y
         --local nX, nY = getNextTile(val)
-
         val.nextX = nX
         val.nextY = nY
+        --debug.debug()
         -- if(nX == nil) then print('nx nil')
         -- elseif nY == nil then print('ny nil')
         -- elseif dist[indexOfShort].dir == nil then print('dist[indexOfShort].dir nil')
         -- end
-        print(nX, nY, dist[indexOfShort].dir)
+        --print(nX, nY, dist[indexOfShort].dir)
         val.nextDecision = dist[indexOfShort].dir
         -- print(val.nextDecision)
       end

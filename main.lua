@@ -8,7 +8,8 @@ MAPATLAS= nil
 DEBUG = true
 DOTS = 244
 
-function love.load()
+function love.load(arg)
+if arg[#arg] == '-debug' then require("mobdebug").start() end
   love.graphics.setDefaultFilter('nearest')
   require"pacMan"
   require"ghosts"
