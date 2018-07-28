@@ -7,6 +7,7 @@ MAPSHEET = {}
 MAPATLAS= nil
 DEBUG = true
 DOTS = 244
+PAUSE = false
 
 function love.load(arg)
   love.math.setRandomSeed(love.timer.getTime())
@@ -30,6 +31,7 @@ function love.load(arg)
 end
 
 function love.update(dt)
+  if PAUSE then return end
   animate(pacMan, dt)
   animate(g_red, dt)
   handleDirection(pacMan)
@@ -65,10 +67,13 @@ function love.keypressed(key, scancode, isRepeat)
   if key == 'escape' then love.event.quit() end
   if key == 'd' then
     if not DEBUG then DEBUG = true else DEBUG = false end
+
   end
-  
+
   if key == 'm' then --[[ mute ]] end
-  if key == 'space' then --[[ pause ]] end
+  if key == 'space' then
+    if not PAUSE then PAUSE = true else PAUSE = false end
+  end
 
 end
 
