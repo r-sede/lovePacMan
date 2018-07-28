@@ -47,42 +47,29 @@ end
 function love.keypressed(key, scancode, isRepeat)
   -- print('tile ',MAP[math.floor( pacMan.y )][math.floor(pacMan.x)])
   if key == 'left'  then
-    if love.keyboard.isDown('lshift') then
-      pacMan.x = pacMan.x - 0.1
-    else
-      pacMan:left()
-    end
+    pacMan:left()
   end
 
   if key == 'right'  then 
-    if love.keyboard.isDown('lshift') then
-      pacMan.x = pacMan.x + 0.1
-    else
-      pacMan:right()
-    end
+    pacMan:right()
   end
 
   if key == 'up'  then
-    if love.keyboard.isDown('lshift') then
-      pacMan.y = pacMan.y - 0.1
-    else
       pacMan:up()
-    end
   end
 
   if key == 'down'  then
-    if love.keyboard.isDown('lshift') then
-      pacMan.y = pacMan.y + 0.1
-    else
-      pacMan:down()
-    end
+    pacMan:down()
   end
 
   if key == 'escape' then love.event.quit() end
-  if key == 'q' then g_red.direction = "left" end
-  if key == 'd' then g_red.direction = "right" end
-  if key == 'z' then g_red.direction = "up" end
-  if key == 's' then g_red.direction = "down" end
+  if key == 'd' then
+    if not DEBUG then DEBUG = true else DEBUG = false end
+  end
+  
+  if key == 'm' then --[[ mute ]] end
+  if key == 'space' then --[[ pause ]] end
+
 end
 
 
