@@ -235,31 +235,31 @@ g_red.update = function(val, dt)
 end
 
 g_red.init = function(val)
---[[   val.startX=14.5,
-  val.startY=12+3,
-  val.x=14.5,
-  val.y=12+3,
-  val.timer = 0,
-  val.speed = 8,
-  val.color = {r=1, g=0, b=0, a=0.7},
-  val.dirX = 0,
-  val.dirY = 0,
-  val.direction = "right",
-  val.animDir = "right",
-  val.curAtlas = "atlas",
-  val.keyframe=1,
-  val.nbrFrame=2,
-  val.fps=5,
-  val.angle=0,
-  val.scaleSignX= 1,
-  val.scaleSignY= 1,
-  val.state = "scatter",
-  val.targetX = 25,
-  val.targetY = 1,
-  val.speedCoef = 0.75,
-  val.nextDecision = "right",
-  val.nextX = 16,
-  val.nextY = 12+3 ]]
+  val.startX=14.5
+  val.startY=12+3
+  val.x=14.5
+  val.y=12+3
+  val.timer = 0
+  val.speed = 8
+  val.color = {r=1, g=0, b=0, a=0.7}
+  val.dirX = 0
+  val.dirY = 0
+  val.direction = "right"
+  val.animDir = "right"
+  val.curAtlas = "atlas"
+  val.keyframe=1
+  val.nbrFrame=2
+  val.fps=5
+  val.angle=0
+  val.scaleSignX= 1
+  val.scaleSignY= 1
+  val.state = "scatter"
+  val.targetX = 25
+  val.targetY = 1
+  val.speedCoef = 0.75
+  val.nextDecision = "right"
+  val.nextX = 16
+  val.nextY = 12+3
 end
 
 g_red.getNextTile = function(val)

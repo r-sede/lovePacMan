@@ -5,6 +5,10 @@ pacMan_states.game.load = function (arg)
 
 end
 
+pacMan_states.game.exit = function ()
+
+end
+
 pacMan_states.game.update = function (dt)
   animate(pacMan, dt)
   animate(g_red, dt)
@@ -15,48 +19,44 @@ pacMan_states.game.update = function (dt)
 end
 
 pacMan_states.game.draw = function ()
-    drawMap()
+  drawMap()
   pacMan:draw()
   g_red:draw()
 end
 
 pacMan_states.game.keypressed = function (key)
-    -- print('tile ',MAP[math.floor( pacMan.y )][math.floor(pacMan.x)])
+  -- print('tile ',MAP[math.floor( pacMan.y )][math.floor(pacMan.x)])
   if key == 'left'  then
-    if love.keyboard.isDown('lshift') then
-      pacMan.x = pacMan.x - 0.1
-    else
-      pacMan:left()
-    end
+    pacMan:left()
   end
 
   if key == 'right'  then 
-    if love.keyboard.isDown('lshift') then
-      pacMan.x = pacMan.x + 0.1
-    else
-      pacMan:right()
-    end
+    pacMan:right()
   end
 
   if key == 'up'  then
-    if love.keyboard.isDown('lshift') then
-      pacMan.y = pacMan.y - 0.1
-    else
       pacMan:up()
-    end
   end
 
   if key == 'down'  then
-    if love.keyboard.isDown('lshift') then
-      pacMan.y = pacMan.y + 0.1
-    else
-      pacMan:down()
-    end
+    pacMan:down()
   end
 
   if key == 'escape' then love.event.quit() end
-  if key == 'q' then g_red.direction = "left" end
-  if key == 'd' then g_red.direction = "right" end
-  if key == 'z' then g_red.direction = "up" end
-  if key == 's' then g_red.direction = "down" end
+  if key == 'd' then
+    if not DEBUG then DEBUG = true else DEBUG = false end
+
+  end
+
+  if key == 'm' then --[[ mute ]] end
+  if key == 'space' then
+    if not PAUSE then PAUSE = true else PAUSE = false end
+  end
+end
+
+pacMan_states.setState = function(state)
+  pacMan_states[CURRENTSTATE].exit()
+  CURRENTSTATE = state
+  pacMan_states[CURRENTSTATE].load()
+
 end

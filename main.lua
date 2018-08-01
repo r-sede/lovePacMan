@@ -8,12 +8,14 @@ MAPATLAS= nil
 DEBUG = true
 DOTS = 244
 PAUSE = false
+CURRENTSTATE = 'game'
 
 function love.load(arg)
   love.math.setRandomSeed(love.timer.getTime())
   love.graphics.setDefaultFilter('nearest')
   require"pacMan"
   require"ghosts"
+  require"pacManStates"
   love.window.setMode((PPM * VW) + 300, PPM * VH)
   love.keyboard.setKeyRepeat(true)
   local getMaps = require('map')
@@ -28,52 +30,25 @@ function love.load(arg)
   MAPSHEET[6] = love.graphics.newQuad(5*16, 0, 16, 16, MAPATLAS:getDimensions())
   MAPSHEET[9] = love.graphics.newQuad(6*16, 0, 16, 16, MAPATLAS:getDimensions())
   MAPSHEET[8] = love.graphics.newQuad(7*16, 0, 16, 16, MAPATLAS:getDimensions())
+
+
+
 end
 
 function love.update(dt)
   if PAUSE then return end
-  animate(pacMan, dt)
-  animate(g_red, dt)
-  handleDirection(pacMan)
-  handleDirection(g_red)
-  pacMan:update(dt)
-  g_red:update(dt)
+  pacMan_states[CURRENTSTATE].update(dt)
+
 end
 
 function love.draw()
-  drawMap()
-  pacMan:draw()
-  g_red:draw()
+  pacMan_states[CURRENTSTATE].draw()
+
 end
 
 function love.keypressed(key, scancode, isRepeat)
-  -- print('tile ',MAP[math.floor( pacMan.y )][math.floor(pacMan.x)])
-  if key == 'left'  then
-    pacMan:left()
-  end
+  pacMan_states[CURRENTSTATE].keypressed(key)
 
-  if key == 'right'  then 
-    pacMan:right()
-  end
-
-  if key == 'up'  then
-      pacMan:up()
-  end
-
-  if key == 'down'  then
-    pacMan:down()
-  end
-
-  if key == 'escape' then love.event.quit() end
-  if key == 'd' then
-    if not DEBUG then DEBUG = true else DEBUG = false end
-
-  end
-
-  if key == 'm' then --[[ mute ]] end
-  if key == 'space' then
-    if not PAUSE then PAUSE = true else PAUSE = false end
-  end
 
 end
 
@@ -149,7 +124,7 @@ function round(val)
   return floor
 end
 
-function getTile(arr, x , y)
+--[[ function getTile(arr, x , y)
   local res = arr[y][x]
   if res then return res end
   print('index error x: '..x..' ;y: '..y )
@@ -162,4 +137,4 @@ function getSurTiles(x,y)
     down = getTile(OBSTACLE, x, y + 1),
     right = getTile(OBSTACLE, x + 1, y),
   }
-end
+end ]]
