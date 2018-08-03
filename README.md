@@ -1,7 +1,9 @@
-# PACMAN remake with love2d
+# PACMAN love2d remake
 
 A pacman remake based on the NES version (1993)
 made with [love2d](https://love2d.org/) <small>*(with love)*</small> in  pure spaghetti style
+
+source: [the Pac-Man dossier](https://www.gamasutra.com/view/feature/3938/the_pacman_dossier.php?print=1)
 
 
 ![pacMan remake screenshot](https://github.com/r-sede/lovePacMan/raw/master/assets/img/gameScreen.jpg ":v")
