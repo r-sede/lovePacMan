@@ -52,6 +52,15 @@ end
 
 
 local function update (val, dt)
+
+  if round(val.x) == round(pacMan.x) and round(val.y) == round(pacMan.y) then
+    if val.state == 'fright' then
+      -- [[ ghost is dead ]]
+      val:init()
+    else
+      pacMan_states.game.catch()
+    end
+  end
   
   if val.state == 'fright' then
     val.curAtlas = 'frightAtlas'
@@ -240,23 +249,19 @@ g_red.init = function(val)
   val.x=14.5
   val.y=12+3
   val.timer = 0
-  val.speed = 8
-  val.color = {r=1, g=0, b=0, a=0.7}
   val.dirX = 0
   val.dirY = 0
   val.direction = "right"
   val.animDir = "right"
   val.curAtlas = "atlas"
   val.keyframe=1
-  val.nbrFrame=2
-  val.fps=5
   val.angle=0
   val.scaleSignX= 1
   val.scaleSignY= 1
   val.state = "scatter"
   val.targetX = 25
   val.targetY = 1
-  val.speedCoef = 0.75
+  val.speedCoef = levelSpec[LEVEL].ghostSpeed
   val.nextDecision = "right"
   val.nextX = 16
   val.nextY = 12+3

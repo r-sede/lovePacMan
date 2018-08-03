@@ -8,7 +8,10 @@ MAPATLAS= nil
 DEBUG = true
 DOTS = 244
 PAUSE = false
-CURRENTSTATE = 'game'
+TITLESCREEN  = nil
+CURRENTSTATE = 'title'
+LEVEL=1
+READYTIMER = 3
 
 function love.load(arg)
   love.math.setRandomSeed(love.timer.getTime())
@@ -16,12 +19,15 @@ function love.load(arg)
   require"pacMan"
   require"ghosts"
   require"pacManStates"
-  love.window.setMode((PPM * VW) + 300, PPM * VH)
+  require"levelSpec"
+  getMaps = require('map')
+  love.window.setMode((PPM * VW)  + 300 , PPM * VH)
   love.keyboard.setKeyRepeat(true)
-  local getMaps = require('map')
-  MAP,OBSTACLE,COLLECTABLE = getMaps('map')
+
   
-  MAPATLAS = love.graphics.newImage('assets/img/pacmanSpriteSheet.png');
+  
+  MAPATLAS = love.graphics.newImage('assets/img/pacmanSpriteSheet.png')
+  TITLESCREEN = love.graphics.newImage('assets/img/title.png')
   MAPSHEET[1] = love.graphics.newQuad(0*16, 0, 16, 16, MAPATLAS:getDimensions())
   MAPSHEET[2] = love.graphics.newQuad(1*16, 0, 16, 16, MAPATLAS:getDimensions())
   MAPSHEET[3] = love.graphics.newQuad(2*16, 0, 16, 16, MAPATLAS:getDimensions())
@@ -30,8 +36,6 @@ function love.load(arg)
   MAPSHEET[6] = love.graphics.newQuad(5*16, 0, 16, 16, MAPATLAS:getDimensions())
   MAPSHEET[9] = love.graphics.newQuad(6*16, 0, 16, 16, MAPATLAS:getDimensions())
   MAPSHEET[8] = love.graphics.newQuad(7*16, 0, 16, 16, MAPATLAS:getDimensions())
-
-
 
 end
 
@@ -113,28 +117,10 @@ function handleDirection (this)
     this.angle =  math.pi * 3 * 0.5
   end
 end
--- maTable={class="sss",closs="ppp"}
--- for k,v in ipairs(maTable) do 
---   print(k,' ; ',v)
--- end
+
 
 function round(val)
   local floor = math.floor(val)
   if(val%1 >=0.5 ) then return floor+1 end
   return floor
 end
-
---[[ function getTile(arr, x , y)
-  local res = arr[y][x]
-  if res then return res end
-  print('index error x: '..x..' ;y: '..y )
-end
-
-function getSurTiles(x,y)
-  return {
-    up = getTile(OBSTACLE,x, y - 1),
-    left = getTile(OBSTACLE, x - 1, y),
-    down = getTile(OBSTACLE, x, y + 1),
-    right = getTile(OBSTACLE, x + 1, y),
-  }
-end ]]

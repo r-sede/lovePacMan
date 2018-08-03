@@ -102,13 +102,21 @@ end
 
 function pacMan.init(val)
   val.x = 14.5
-  val.y = 24
+  val.y = 24+3
   val.isOnPillEffect = false
   val.timer = 0
+  val.speedCoef = levelSpec[LEVEL].pacManSpeed
+  val.dirX = 0
+  val.dirY = 0
+  val.direction = "start"
+  val.keyframe = 1
+  val.angle = 0
+  val.scaleSignX = 1
+  val.scaleSignY = 1
 end
 
 
-function pacMan.collect(val,item)
+function pacMan.collect(val, item)
   if item == 8 then
     val.score = val.score + 10
     
