@@ -1,5 +1,6 @@
 function setState(val, state)
   val.state = state
+  if state == 'fright' then pacMan.speedCoef = levelSpec[LEVEL].pacManFrightSpeed end
   local res = ''
   if val.direction == 'up' then
     res = 'down'
@@ -144,7 +145,7 @@ local function draw (val)
   val.scaleSignY * PPM * 1.6,
   16*0.5,
   16*0.5)
-  local r, g, b, a = love.graphics.getColor()
+  --local r, g, b, a = love.graphics.getColor()
   -- print('rgba: '..r..', '..g..', '..b..', '..a)
   if DEBUG then 
     love.graphics.setColor(val.color.r,val.color.g,val.color.b,val.color.a)
@@ -185,7 +186,9 @@ g_red = {
     speedCoef = 0.75,
     nextDecision = "right",
     nextX = 16,
-    nextY = 12+3
+    nextY = 12+3,
+    chaseIter = 1,
+    scatterIter = 1,
   }
   g_red.animTimer = 1 /g_red.fps
   g_red.atlas= love.graphics.newImage('assets/img/fantomesPacman4.png')
@@ -220,22 +223,27 @@ end
 g_red.update = function(val, dt)
   val.timer = val.timer  + dt
   if val.state == 'chase' then
-    val.speedCoef = 0.75
+    val.speedCoef =levelSpec[LEVEL].ghostSpeed
     val.targetX, val.targetY = round(pacMan.x), round(pacMan.y)
-    if val.timer >= 20 then
+    if val.timer >= levelSpec[LEVEL].chaseTime[val.chaseIter] then
+      val.chaseIter = val.chaseIter + 1
+      if val.chaseIter > 4 then val.chaseIter = 4 end
       val.timer = 0
       setState(val, 'scatter')
     end
   elseif val.state == 'scatter' then
-    val.speedCoef = 0.75
-    if val.timer >= 7 then
+    val.speedCoef = levelSpec[LEVEL].ghostSpeed
+    if val.timer >= levelSpec[LEVEL].chaseTime[val.scatterIter] then
+      val.scatterIter = val.scatterIter + 1
+      if val.scatterIter > 4 then val.scatterIter = 4 end
       val.timer = 0
       setState(val, 'chase')
     end
     val.targetX, val.targetY = 25, 1
   elseif val.state == 'fright' then
-    val.speedCoef = 0.5
-    if val.timer >= 6 then
+    val.speedCoef =levelSpec[LEVEL].ghostFrightSpeed
+    if val.timer >= levelSpec[LEVEL].frightTime then
+      pacMan.speedCoef = levelSpec[LEVEL].pacManSpeed
       val.timer = 0
       setState(val, 'chase')
     end

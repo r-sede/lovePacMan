@@ -129,6 +129,7 @@ function pacMan.collect(val, item)
     setState(g_red, 'fright')
   end
   DOTS = DOTS - 1
+  -- si plus de dots level +1 et init
 
 
 end
