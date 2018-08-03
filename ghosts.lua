@@ -233,7 +233,7 @@ g_red.update = function(val, dt)
     end
   elseif val.state == 'scatter' then
     val.speedCoef = levelSpec[LEVEL].ghostSpeed
-    if val.timer >= levelSpec[LEVEL].chaseTime[val.scatterIter] then
+    if val.timer >= levelSpec[LEVEL].scatterTime[val.scatterIter] then
       val.scatterIter = val.scatterIter + 1
       if val.scatterIter > 4 then val.scatterIter = 4 end
       val.timer = 0

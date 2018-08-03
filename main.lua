@@ -12,6 +12,7 @@ TITLESCREEN  = nil
 CURRENTSTATE = 'title'
 LEVEL=1
 READYTIMER = 3
+FONT = nil
 
 function love.load(arg)
   love.math.setRandomSeed(love.timer.getTime())
@@ -25,7 +26,8 @@ function love.load(arg)
   love.keyboard.setKeyRepeat(true)
 
   
-  
+  FONT = love.graphics.newFont('assets/fonts/emulogic.ttf', 8)
+  love.graphics.setFont(FONT)
   MAPATLAS = love.graphics.newImage('assets/img/pacmanSpriteSheet.png')
   TITLESCREEN = love.graphics.newImage('assets/img/title.png')
   MAPSHEET[1] = love.graphics.newQuad(0*16, 0, 16, 16, MAPATLAS:getDimensions())
@@ -36,7 +38,6 @@ function love.load(arg)
   MAPSHEET[6] = love.graphics.newQuad(5*16, 0, 16, 16, MAPATLAS:getDimensions())
   MAPSHEET[9] = love.graphics.newQuad(6*16, 0, 16, 16, MAPATLAS:getDimensions())
   MAPSHEET[8] = love.graphics.newQuad(7*16, 0, 16, 16, MAPATLAS:getDimensions())
-
 end
 
 function love.update(dt)
