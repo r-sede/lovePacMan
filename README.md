@@ -14,7 +14,7 @@ source: [the Pac-Man dossier](https://www.gamasutra.com/view/feature/3938/the_pa
 - [ ] show score, lives, 'Ready!' etc ...
 - [ ] add high score file
 - [ ] fix frightened ghost texture
-- [ ] add menu to title screen (play/scores)
+- [x] add menu to title screen (play/scores)
 - [ ] add tunnel 
 - [ ] correct the score when Pac-Man eats a ghost
 - [ ] add bonus (fruits)
@@ -30,7 +30,7 @@ source: [the Pac-Man dossier](https://www.gamasutra.com/view/feature/3938/the_pa
 
 ---
 
-## window:
+## windows:
 unzip  build/lovePacMan.zip
 
 run lovePacMan.exe

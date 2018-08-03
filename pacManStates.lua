@@ -68,7 +68,7 @@ pacMan_states.game.keypressed = function (key)
     pacMan:down()
   end
 
-  if key == 'escape' then love.event.quit() end
+  if key == 'escape' then pacMan_states.setState('title') end
   if key == 'd' then
     if not DEBUG then DEBUG = true else DEBUG = false end
 
@@ -79,9 +79,21 @@ pacMan_states.game.keypressed = function (key)
     if not PAUSE then PAUSE = true else PAUSE = false end
   end
 end
+-----------------------------------------
+---------------TITLE---------------------
+-----------------------------------------
+MENU = {'highscores','play','credit' }
+MENUCURSOR = 1
+MENUPOS = 
+{
+  {150*PPM - 20*PPM, 200*PPM},
+  {150*PPM - 20*PPM, 232*PPM},
+  {150*PPM - 20*PPM, 264*PPM}
+}
 
 pacMan_states.title.load = function(arg)
  --start music
+ MENUCURSOR = 1
 end
 
 pacMan_states.title.exit = function()
@@ -94,13 +106,28 @@ end
 
 pacMan_states.title.draw = function(arg)
   love.graphics.draw(TITLESCREEN, 0, 0, 0, 2, 2)
+  love.graphics.print(MENU[1], 150*PPM, 200*PPM, 0, 2, 2)
+  love.graphics.print(MENU[2], 150*PPM, 232*PPM, 0, 2, 2)
+  love.graphics.print(MENU[3], 150*PPM, 264*PPM, 0, 2, 2)
+  love.graphics.print('>', MENUPOS[MENUCURSOR][1],MENUPOS[MENUCURSOR][2],0,2,2)
 end
 
 pacMan_states.title.keypressed = function(key)
   if key == 'return' then
-    pacMan_states.setState('game')
+    if MENUCURSOR == 1 then return end
+    if MENUCURSOR == 2 then pacMan_states.setState('game') end
+    if MENUCURSOR == 3 then return end
   end
   if key == 'escape' then love.event.quit() end
+  if key == 'up' then
+    MENUCURSOR = MENUCURSOR - 1
+    if MENUCURSOR < 1 then MENUCURSOR = #MENU end
+  end
+  if key == 'down' then
+    MENUCURSOR = MENUCURSOR + 1
+    if MENUCURSOR > #MENU then MENUCURSOR = 1 end
+  end
+  
   
 end
 
