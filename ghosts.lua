@@ -54,10 +54,26 @@ end
 
 local function update (val, dt)
 
+  if val.state == 'goHome' then
+    if round(val.x) == round(val.startX) and round(val.y) == round(val.startY) then
+      val:init()
+    else
+      local dx = val.startX - val.x
+      local dy = val.startY - val.y
+
+      val.x = val.x + dt * val.speed * val.speedCoef * dx *0.8
+      val.y = val.y + dt * val.speed * val.speedCoef * dy *0.8
+      return
+    end
+  end
+
   if round(val.x) == round(pacMan.x) and round(val.y) == round(pacMan.y) then
     if val.state == 'fright' then
+      pacMan.score = pacMan.score + 200
+      val.state = 'goHome'
+      return
       -- [[ ghost is dead ]]
-      val:init()
+      --val:init()
     else
       pacMan_states.game.catch()
     end
