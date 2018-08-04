@@ -45,9 +45,15 @@ end
 
 
 pacMan_states.game.draw = function ()
+  love.graphics.print(pacMan.score, PPM * VW * 0.25, 0,0,2*PPM,2*PPM)
   drawMap()
   pacMan:draw()
   g_red:draw()
+  if READYTIMER >= 0 then
+    love.graphics.setColor(240,240,0,1)
+    love.graphics.print('READY!', (14.5 -3)*PPM*BLOCKSIZE,  20*PPM*BLOCKSIZE,0,2*PPM,1.5*PPM)
+    love.graphics.setColor(1,1,1,1)
+  end
 end
 
 pacMan_states.game.keypressed = function (key)
@@ -82,13 +88,13 @@ end
 -----------------------------------------
 ---------------TITLE---------------------
 -----------------------------------------
-MENU = {'highscores','play','credit' }
+MENU = {'scores','play','credit' }
 MENUCURSOR = 1
 MENUPOS = 
 {
-  {150*PPM - 20*PPM, 200*PPM},
-  {150*PPM - 20*PPM, 232*PPM},
-  {150*PPM - 20*PPM, 264*PPM}
+  {(VW*PPM*0.4) - (20*PPM) , VH*0.5*PPM},
+  {(VW*PPM*0.4) - (20*PPM) , (VH*0.5*PPM) +(32*PPM)},
+  {(VW*PPM*0.4) - (20*PPM) , (VH*0.5*PPM) +(64*PPM)}
 }
 
 pacMan_states.title.load = function(arg)
@@ -105,11 +111,11 @@ pacMan_states.title.update = function(dt)
 end
 
 pacMan_states.title.draw = function(arg)
-  love.graphics.draw(TITLESCREEN, 0, 0, 0, 2, 2)
-  love.graphics.print(MENU[1], 150*PPM, 200*PPM, 0, 2, 2)
-  love.graphics.print(MENU[2], 150*PPM, 232*PPM, 0, 2, 2)
-  love.graphics.print(MENU[3], 150*PPM, 264*PPM, 0, 2, 2)
-  love.graphics.print('>', MENUPOS[MENUCURSOR][1],MENUPOS[MENUCURSOR][2],0,2,2)
+  love.graphics.draw(TITLESCREEN, 0, 0, 0, 2*PPM, 2*PPM)
+  love.graphics.print(MENU[1], VW*PPM*0.4, VH*0.5*PPM, 0, 2*PPM, 2*PPM)
+  love.graphics.print(MENU[2], VW*PPM*0.4,  (VH*0.5*PPM) +(32*PPM), 0, 2*PPM, 2*PPM)
+  love.graphics.print(MENU[3], VW*PPM*0.4,  (VH*0.5*PPM) +(64*PPM), 0, 2*PPM, 2*PPM)
+  love.graphics.print('>', MENUPOS[MENUCURSOR][1],MENUPOS[MENUCURSOR][2],0,2*PPM,2*PPM)
 end
 
 pacMan_states.title.keypressed = function(key)

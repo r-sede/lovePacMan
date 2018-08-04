@@ -88,6 +88,9 @@ local function update (val, dt)
     val.animDir = val.direction
   end
 
+  if round(val.x) < 3 then val.x = 27; val.nextX = 26 return end
+  if round(val.x) > 27 then val.x = 3; val.nextX = 4 return end
+
   if round(val.x) == val.nextX and round(val.y) == val.nextY then
 
     val.direction = val.nextDecision
@@ -122,8 +125,10 @@ local function update (val, dt)
     else
       table.sort(dist, function(a,b) return a.dist < b.dist end)
     end
+
     val.nextX = nX
     val.nextY = nY
+
     val.nextDecision = dist[1].dir
   end
 
@@ -167,11 +172,11 @@ local function draw (val)
   if DEBUG then 
     love.graphics.setColor(val.color.r,val.color.g,val.color.b,val.color.a)
     love.graphics.rectangle('fill',(val.targetX-1)*BLOCKSIZE*PPM , (val.targetY-1)*BLOCKSIZE*PPM, BLOCKSIZE*PPM, BLOCKSIZE*PPM)
-    love.graphics.print('x: '..val.x..'; y: '..val.y, (VW*PPM)+10, 45)
-    love.graphics.print('dir: '..val.direction, (VW*PPM)+10, 60)
-    love.graphics.print('nextX: '..val.nextX..'; nextY: '..val.nextY, (VW*PPM)+10, 75)
-    love.graphics.print('nextDecision: '..val.nextDecision, (VW*PPM)+10, 90)
-    love.graphics.print('state: '..val.state, (VW*PPM)+10, 105)
+    love.graphics.print('x: '..val.x..'; y: '..val.y, (VW*PPM)+10, 45,0,PPM)
+    love.graphics.print('dir: '..val.direction, (VW*PPM)+10, 60,0,PPM)
+    love.graphics.print('nextX: '..val.nextX..'; nextY: '..val.nextY, (VW*PPM)+10, 75,0,PPM)
+    love.graphics.print('nextDecision: '..val.nextDecision, (VW*PPM)+10, 90,0,PPM)
+    love.graphics.print('state: '..val.state, (VW*PPM)+10, 105,0,PPM)
     love.graphics.setColor(1,1,1,1)
   end
 end

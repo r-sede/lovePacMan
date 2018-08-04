@@ -30,15 +30,17 @@ function pacMan.update(val,dt)
 
   if val.isOnPillEffect == true then
     val.timer = val.timer + dt
-    if val.timer >= 8 then
+    if val.timer >= levelSpec[LEVEL].frightTime then
       val.isOnPillEffect = false
     end
   end
 
   local rndX = round (val.x)
   local rndY = round (val.y)
+  if rndX < 2 then val.x = 27 return end
+  if rndX > 27 then val.x = 2 return end
 
-  local collectableChar = COLLECTABLE[rndY][rndX]
+  local collectableChar = COLLECTABLE[rndY][rndX] or 0
     if collectableChar > 0 then
       COLLECTABLE[rndY][rndX] = 0;
       val:collect(collectableChar)
@@ -93,9 +95,9 @@ function pacMan.draw(val)
   if(DEBUG) then
     love.graphics.circle('line', (val.x-1)*BLOCKSIZE*PPM + BLOCKSIZE*PPM*0.5, (val.y-1)*BLOCKSIZE*PPM + BLOCKSIZE*PPM*0.5, BLOCKSIZE*PPM*0.8,8)
     love.graphics.rectangle('fill', round(val.x-1)*BLOCKSIZE*PPM,round( val.y-1 )*BLOCKSIZE*PPM, BLOCKSIZE*PPM, BLOCKSIZE * PPM )
-    love.graphics.print('x: '..val.x.. ' ; y: '..val.y, (VW*PPM)+10, 10)
-    love.graphics.print('score '..val.score, (VW*PPM)+10, 33)
-    love.graphics.print('dir: '..val.direction, (PPM*VW)+10, 20)
+    love.graphics.print('x: '..val.x.. ' ; y: '..val.y, (VW*PPM)+10, 10,0,PPM)
+    love.graphics.print('score '..val.score, (VW*PPM)+10, 33,0,PPM)
+    love.graphics.print('dir: '..val.direction, (PPM*VW)+10, 20,0,PPM)
   end  
 
 end
