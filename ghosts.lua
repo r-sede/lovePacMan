@@ -57,9 +57,10 @@ local function update (val, dt)
   if val.state == 'goHome' then
     if round(val.x) == round(val.startX) and round(val.y) == round(val.startY) then
       val:init()
+      return
     else
-      local dx = val.startX - val.x
-      local dy = val.startY - val.y
+      local dx = round(val.startX) - val.x
+      local dy = round(val.startY) - val.y
 
       val.x = val.x + dt * val.speed * val.speedCoef * dx *0.8
       val.y = val.y + dt * val.speed * val.speedCoef * dy *0.8
@@ -72,8 +73,8 @@ local function update (val, dt)
       pacMan.score = pacMan.score + 200
       val.state = 'goHome'
       return
-      -- [[ ghost is dead ]]
-      --val:init()
+
+
     else
       pacMan_states.game.catch()
     end
@@ -239,7 +240,7 @@ end
 g_red.update = function(val, dt)
   val.timer = val.timer  + dt
   if val.state == 'chase' then
-    val.speedCoef =levelSpec[LEVEL].ghostSpeed
+    val.speedCoef = levelSpec[LEVEL].ghostSpeed
     val.targetX, val.targetY = round(pacMan.x), round(pacMan.y)
     if val.timer >= levelSpec[LEVEL].chaseTime[val.chaseIter] then
       val.chaseIter = val.chaseIter + 1

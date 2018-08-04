@@ -22,7 +22,7 @@ function love.load(arg)
   require"pacManStates"
   require"levelSpec"
   getMaps = require('map')
-  love.window.setMode((PPM * VW)  --[[ + 300 ]] , PPM * VH)
+  love.window.setMode((PPM * VW)   + 300  , PPM * VH)
   love.keyboard.setKeyRepeat(true)
 
   
