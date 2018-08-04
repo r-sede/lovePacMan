@@ -28,13 +28,14 @@ function love.load(arg)
   getMaps = require('map')
   love.window.setMode((PPM * VW)   + 300  , PPM * VH)
   love.keyboard.setKeyRepeat(true)
-  SAVEDIR =  love.filesystem.getSaveDirectory( )
-  print(fileExists( SAVEDIR..'/highscore.score' ))
-  if fileExists( SAVEDIR..'/highscore.score' ) then
-    HIGHSCORE = linesFrom(SAVEDIR..'/highscore.score')
+--[[   SAVEDIR =  love.filesystem.getSaveDirectory( )
+  print(fileExists( SAVEDIR..'/highscore.score' )) ]]
+  if fileExists( 'highscore.score' ) then
+    HIGHSCORE = linesFrom('highscore.score')
+    --print(#HIGHSCORE)
   else
-    local f = io.open(SAVEDIR..'/highscore.score', 'w')
-    f:write('0\n')
+    local f = io.open('highscore.score', 'w')
+    f:write('0')
     f:close()
     HIGHSCORE = {0}
   end
@@ -142,7 +143,7 @@ function writeScore()
   for i=1,#tmp do
     res = res..tmp[i]..'\n'
   end
-  local f = io.open(SAVEDIR..'/highscore.score', 'w+')
+  local f = io.open('highscore.score', 'w+')
   f:write(res)
   f:close()
 end

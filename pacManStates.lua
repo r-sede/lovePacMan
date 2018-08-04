@@ -36,8 +36,8 @@ pacMan_states.game.catch = function ()
   pacMan.life = pacMan.life - 1
   if pacMan.life < 0 then
     if pacMan.score > HIGHSCORE[1] then
-      HIGHSCORE[1] = pacMan.score
       writeScore()
+      HIGHSCORE[1] = pacMan.score
     end
     pacMan_states.setState('title')
   end
