@@ -180,7 +180,7 @@ g_red = {
     startX=14.5, startY=12+3,
     x=14.5, y=12+3,
     timer = 0,
-    speed = 8,
+    speed = 7.4,
     color = {r=1, g=0, b=0, a=0.7},
     dirX = 0,
     dirY = 0,

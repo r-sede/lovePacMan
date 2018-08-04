@@ -132,7 +132,7 @@ end
 
 pacMan_states.title.keypressed = function(key)
   if key == 'return' then
-    if MENUCURSOR == 1 then return end
+    if MENUCURSOR == 1 then pacMan_states.setState('scores') end
     if MENUCURSOR == 2 then pacMan_states.setState('game') end
     if MENUCURSOR == 3 then return end
   end
