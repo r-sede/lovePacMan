@@ -14,7 +14,6 @@ function setState(val, state)
   val.nextDecision = res
 end
 
-
 local function distance (x1, y1, x2, y2 )
   local dx = x1 - x2
   local dy = y1 - y2
@@ -36,11 +35,6 @@ local function getNextTile(val)
   end
 end
 
-local function getNextTileObs(val)
-  local nextX, nextY = getNextTile(val)
-  return OBSTACLE[nextY][nextX]
-end
-
 local function getSurTile(x,y)
   return 
   {
@@ -51,7 +45,6 @@ local function getSurTile(x,y)
   }
 end
 
-
 local function update (val, dt)
 
   if val.state == 'goHome' then
@@ -61,7 +54,6 @@ local function update (val, dt)
     else
       local dx = round(val.startX) - val.x
       local dy = round(val.startY) - val.y
-
       val.x = val.x + dt * val.speed * val.speedCoef * dx *0.8
       val.y = val.y + dt * val.speed * val.speedCoef * dy *0.8
       return
@@ -70,11 +62,11 @@ local function update (val, dt)
 
   if round(val.x) == round(pacMan.x) and round(val.y) == round(pacMan.y) then
     if val.state == 'fright' then
-      pacMan.score = pacMan.score + 200
+      pacMan.succCatch = pacMan.succCatch + 1
+      if pacMan.succCatch > 5 then pacMan.succCatch = 5 end 
+      pacMan.score = pacMan.score + CATCHPOINT[pacMan.succCatch]
       val.state = 'goHome'
       return
-
-
     else
       pacMan_states.game.catch()
     end
@@ -88,8 +80,8 @@ local function update (val, dt)
     val.animDir = val.direction
   end
 
-  if round(val.x) < 3 then val.x = 27; val.nextX = 26 return end
-  if round(val.x) > 27 then val.x = 3; val.nextX = 4 return end
+  if round(val.x) < 3 and round(val.y) == 18 then val.x = 27; val.nextX = 26 return end
+  if round(val.x) > 27 and round(val.y) == 18  then val.x = 3; val.nextX = 4 return end
 
   if round(val.x) == val.nextX and round(val.y) == val.nextY then
 
@@ -97,7 +89,7 @@ local function update (val, dt)
 
     local nX, nY = getNextTile(val)
     local surObst = getSurTile(nX,nY)
-    -- print(nX, nY)
+
     local dist = {}
     for i=1,#surObst do
       repeat
@@ -167,8 +159,7 @@ local function draw (val)
   val.scaleSignY * PPM * 1.6,
   16*0.5,
   16*0.5)
-  --local r, g, b, a = love.graphics.getColor()
-  -- print('rgba: '..r..', '..g..', '..b..', '..a)
+
   if DEBUG then 
     love.graphics.setColor(val.color.r,val.color.g,val.color.b,val.color.a)
     love.graphics.rectangle('fill',(val.targetX-1)*BLOCKSIZE*PPM , (val.targetY-1)*BLOCKSIZE*PPM, BLOCKSIZE*PPM, BLOCKSIZE*PPM)

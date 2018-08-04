@@ -8,7 +8,7 @@ pacMan_states.game.load = function (arg)
   MAP,OBSTACLE,COLLECTABLE = getMaps('map')
   READYTIMER = 3
   LEVEL = 1
-  pacMan.life = 3
+  pacMan.life = 2
   pacMan.score = 0
   pacMan:init()
   g_red:init()
@@ -35,6 +35,10 @@ end
 pacMan_states.game.catch = function ()
   pacMan.life = pacMan.life - 1
   if pacMan.life < 0 then
+    if pacMan.score > HIGHSCORE[1] then
+      HIGHSCORE[1] = pacMan.score
+      writeScore()
+    end
     pacMan_states.setState('title')
   end
   pacMan:init()
@@ -45,10 +49,17 @@ end
 
 
 pacMan_states.game.draw = function ()
-  love.graphics.print(pacMan.score, PPM * VW * 0.25, 0,0,2*PPM,2*PPM)
   drawMap()
   pacMan:draw()
   g_red:draw()
+  --score etc
+  love.graphics.print('HIGH SCORE', PPM * VW * 0.33, 0,0,2*PPM,2*PPM)
+  love.graphics.print(math.max(HIGHSCORE[1],pacMan.score) , PPM * VW * 0.48, 23*PPM,0,2*PPM,2*PPM)
+  love.graphics.print('1UP', PPM * VW * 0.025, 0,0,2*PPM,2*PPM)
+  love.graphics.print(pacMan.score, PPM * VW * 0.05, 23*PPM,0,2*PPM,2*PPM)
+  for i=1,pacMan.life do 
+    love.graphics.draw(pacMan.atlas, pacMan.sprites[1],PPM * VW * 0.05+(PPM*32*i), VH*PPM-32*PPM,0,0.8*PPM,0.8*PPM)
+  end
   if READYTIMER >= 0 then
     love.graphics.setColor(240,240,0,1)
     love.graphics.print('READY!', (14.5 -3)*PPM*BLOCKSIZE,  20*PPM*BLOCKSIZE,0,2*PPM,1.5*PPM)

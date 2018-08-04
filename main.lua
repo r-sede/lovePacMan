@@ -1,7 +1,7 @@
 PPM = 1
 VW = 448
 VH = 576
-BLOCKSIZE = 16;
+BLOCKSIZE = 16
 MAP = nil
 MAPSHEET = {}
 MAPATLAS= nil
@@ -13,6 +13,10 @@ CURRENTSTATE = 'title'
 LEVEL=1
 READYTIMER = 3
 FONT = nil
+HIGHSCORE = {}
+CATCHPOINT = {200,400,800,1600,12000}
+SAVEDIR = nil
+
 
 function love.load(arg)
   love.math.setRandomSeed(love.timer.getTime())
@@ -24,8 +28,16 @@ function love.load(arg)
   getMaps = require('map')
   love.window.setMode((PPM * VW)   + 300  , PPM * VH)
   love.keyboard.setKeyRepeat(true)
-
-  
+  SAVEDIR =  love.filesystem.getSaveDirectory( )
+  print(fileExists( SAVEDIR..'/highscore.score' ))
+  if fileExists( SAVEDIR..'/highscore.score' ) then
+    HIGHSCORE = linesFrom(SAVEDIR..'/highscore.score')
+  else
+    local f = io.open(SAVEDIR..'/highscore.score', 'w')
+    f:write('0\n')
+    f:close()
+    HIGHSCORE = {0}
+  end
   FONT = love.graphics.newFont('assets/fonts/emulogic.ttf', 8)
   love.graphics.setFont(FONT)
   MAPATLAS = love.graphics.newImage('assets/img/pacmanSpriteSheet.png')
@@ -43,27 +55,22 @@ end
 function love.update(dt)
   if PAUSE then return end
   pacMan_states[CURRENTSTATE].update(dt)
-
 end
 
 function love.draw()
   pacMan_states[CURRENTSTATE].draw()
-
 end
 
 function love.keypressed(key, scancode, isRepeat)
   pacMan_states[CURRENTSTATE].keypressed(key)
-
-
 end
-
 
 function drawMap()
   for j=1,#MAP do
     for i=1,#MAP[j] do
       ii = i-1
       jj = j-1
-      local curChar = MAP[j][i];
+      local curChar = MAP[j][i]
       if curChar >0   then
         love.graphics.draw(MAPATLAS,MAPSHEET[curChar],ii*BLOCKSIZE*PPM,jj*BLOCKSIZE*PPM,0,PPM,PPM )
       end
@@ -79,7 +86,7 @@ function drawMap()
       for i=1,#MAP[j] do
         ii = i-1
         jj = j-1
-        local curChar = MAP[j][i];
+        local curChar = MAP[j][i]
         if curChar>0  then
           love.graphics.print(curChar,ii*BLOCKSIZE*PPM,jj*BLOCKSIZE*PPM)
           love.graphics.rectangle("line",ii*BLOCKSIZE*PPM,jj*BLOCKSIZE*PPM,PPM*BLOCKSIZE,PPM*BLOCKSIZE )
@@ -119,9 +126,37 @@ function handleDirection (this)
   end
 end
 
-
 function round(val)
   local floor = math.floor(val)
   if(val%1 >=0.5 ) then return floor+1 end
   return floor
+end
+
+function writeScore()
+  local tmp = {}
+  tmp[1] = pacMan.score
+  for i=1,#HIGHSCORE do
+    table.insert(tmp, HIGHSCORE[i])
+  end
+  local res = ''
+  for i=1,#tmp do
+    res = res..tmp[i]..'\n'
+  end
+  local f = io.open(SAVEDIR..'/highscore.score', 'w+')
+  f:write(res)
+  f:close()
+end
+
+function fileExists(name)
+  local f=io.open(name,"r")
+  if f~=nil then io.close(f) return true else return false end
+end
+
+function linesFrom(file)
+  if not fileExists(file) then return {0} end
+  lines = {}
+  for line in io.lines(file) do 
+    lines[#lines + 1] = tonumber(line)
+  end
+  return lines
 end

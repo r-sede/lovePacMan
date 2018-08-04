@@ -1,7 +1,7 @@
 pacMan = 
   {
     x = 14.5, y = 24+3,
-    life = 3,
+    life = 2,
     score = 0,
     isOnPillEffect = false,
     timer = 0,
@@ -15,7 +15,8 @@ pacMan =
     fps=10,
     angle=0,
     scaleSignX= 1,
-    scaleSignY= 1
+    scaleSignY= 1,
+    succCatch = 0
   }
 pacMan.animTimer = 1 /pacMan.fps
 pacMan.atlas= love.graphics.newImage('assets/img/pacManLana.png');
@@ -32,13 +33,14 @@ function pacMan.update(val,dt)
     val.timer = val.timer + dt
     if val.timer >= levelSpec[LEVEL].frightTime then
       val.isOnPillEffect = false
+      val.succCatch = 0
     end
   end
 
   local rndX = round (val.x)
   local rndY = round (val.y)
-  if rndX < 2 then val.x = 27 return end
-  if rndX > 27 then val.x = 2 return end
+  if rndX < 3 and rndY == 18 then val.x = 26 return end
+  if rndX > 27 and rndY == 18 then val.x = 4 return end
 
   local collectableChar = COLLECTABLE[rndY][rndX] or 0
     if collectableChar > 0 then
@@ -115,6 +117,7 @@ function pacMan.init(val)
   val.angle = 0
   val.scaleSignX = 1
   val.scaleSignY = 1
+  val.succCatch = 0
 end
 
 

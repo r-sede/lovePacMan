@@ -11,7 +11,7 @@ source: [the Pac-Man dossier](https://www.gamasutra.com/view/feature/3938/the_pa
 ### TODO:
 - [ ] add other ghosts
 - [ ] add Fx/Music
-- [ ] show score, lives, 'Ready!' etc ...
+- [x] show score, lives, 'Ready!' etc ...
 - [ ] add high score file
 - [ ] fix frightened ghost texture
 - [x] add menu to title screen (play/scores)
