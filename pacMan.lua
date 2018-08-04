@@ -42,7 +42,7 @@ function pacMan.update(val,dt)
   if rndX < 3 and rndY == 18 then val.x = 26 return end
   if rndX > 27 and rndY == 18 then val.x = 4 return end
 
-  local collectableChar = COLLECTABLE[rndY][rndX] or 0
+  local collectableChar = COLLECTABLE[rndY][rndX]
     if collectableChar > 0 then
       COLLECTABLE[rndY][rndX] = 0;
       val:collect(collectableChar)
@@ -134,6 +134,17 @@ function pacMan.collect(val, item)
     setState(g_red, 'fright')
   end
   DOTS = DOTS - 1
+  if DOTS <= 0 then
+    LEVEL = LEVEL + 1
+    if LEVEL >= 21 then LEVEL = 21 end
+    pacMan:init()
+    g_red:init()
+    g_red.chaseIter = 1
+    g_red.scatterIter = 1
+    MAP,OBSTACLE,COLLECTABLE = getMaps('map')
+    READYTIMER = 3
+    DOTS = 244
+  end
   -- si plus de dots level +1 et init
 
 

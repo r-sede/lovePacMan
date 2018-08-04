@@ -12,6 +12,7 @@ pacMan_states.game.load = function (arg)
   pacMan.score = 0
   pacMan:init()
   g_red:init()
+  DOTS = 244
 end
 
 pacMan_states.game.exit = function ()

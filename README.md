@@ -12,11 +12,11 @@ source: [the Pac-Man dossier](https://www.gamasutra.com/view/feature/3938/the_pa
 - [ ] add other ghosts
 - [ ] add Fx/Music
 - [x] show score, lives, 'Ready!' etc ...
-- [ ] add high score file
+- [x] add high score file
 - [ ] fix frightened ghost texture
 - [x] add menu to title screen (play/scores)
 - [x] add tunnel 
-- [ ] correct the score when Pac-Man eats a ghost
+- [x] correct the score when Pac-Man eats a ghost
 - [ ] add bonus (fruits)
 - [ ] better pacMan control ? :/
 
