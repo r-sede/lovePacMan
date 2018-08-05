@@ -4,7 +4,9 @@ VH = 576
 BLOCKSIZE = 16
 MAP = nil
 MAPSHEET = {}
+FRUITSHEET = {}
 MAPATLAS= nil
+FRUITATLAS = nil
 DEBUG = false
 DOTS = 244
 PAUSE = false
@@ -19,40 +21,45 @@ SAVEDIR = nil
 DEBUG_PLACEHOLDER = 0
 SOUNDVOL = 1
 S_INTRO, S_DOT, S_DEATH, S_EATGHOST, S_READY =  nil
+S_DEATH_DUR = nil
+GOFLAG = false
 
 function love.load(arg)
+  love.math.setRandomSeed(love.timer.getTime())
+  love.graphics.setDefaultFilter('nearest')
+  love.keyboard.setKeyRepeat(true)
+
   require"pacMan"
   require"ghosts"
   require"pacManStates"
   require"levelSpec"
   getMaps = require('map')
-
-  love.math.setRandomSeed(love.timer.getTime())
-  love.graphics.setDefaultFilter('nearest')
-
-  if fileExists( 'highscore.score' ) then
-    HIGHSCORE = linesFrom('highscore.score')
-  else
-    local f = io.open('highscore.score', 'w')
-    f:write('0')
-    f:close()
-    HIGHSCORE = {0}
-  end
-  -- Cette ligne permet d'afficher des traces dans la console pendant l'éxécution
+  
   if arg[#arg] == "-debug" then
     DEBUG_PLACEHOLDER = 300
     DEBUG = true
     print('\n')
   end
-
+  
   love.window.setMode((PPM * VW)   + DEBUG_PLACEHOLDER  , PPM * VH)
-  love.keyboard.setKeyRepeat(true)
-
+  love.window.setTitle('LovePacMan')
 
   FONT = love.graphics.newFont('assets/fonts/emulogic.ttf', 8)
   love.graphics.setFont(FONT)
-  MAPATLAS = love.graphics.newImage('assets/img/pacmanSpriteSheet.png')
+  
   TITLESCREEN = love.graphics.newImage('assets/img/title.png')
+  
+  FRUITATLAS= love.graphics.newImage('assets/img/fruits.png')
+  FRUITSHEET['cherries']= love.graphics.newQuad(0*16, 0, 16, 16, FRUITATLAS:getDimensions())
+  FRUITSHEET['strawberry']= love.graphics.newQuad(1*16, 0, 16, 16, FRUITATLAS:getDimensions())
+  FRUITSHEET['peach']= love.graphics.newQuad(2*16, 0, 16, 16, FRUITATLAS:getDimensions())
+  FRUITSHEET['apple']= love.graphics.newQuad(3*16, 0, 16, 16, FRUITATLAS:getDimensions())
+  FRUITSHEET['graped']= love.graphics.newQuad(4*16, 0, 16, 16, FRUITATLAS:getDimensions())
+  FRUITSHEET['bell']= love.graphics.newQuad(5*16, 0, 16, 16, FRUITATLAS:getDimensions())
+  FRUITSHEET['galaxian']= love.graphics.newQuad(6*16, 0, 16, 16, FRUITATLAS:getDimensions())
+  FRUITSHEET['key']= love.graphics.newQuad(6*16, 0, 16, 16, FRUITATLAS:getDimensions())
+  
+  MAPATLAS = love.graphics.newImage('assets/img/pacmanSpriteSheet.png')
   MAPSHEET[1] = love.graphics.newQuad(0*16, 0, 16, 16, MAPATLAS:getDimensions())
   MAPSHEET[2] = love.graphics.newQuad(1*16, 0, 16, 16, MAPATLAS:getDimensions())
   MAPSHEET[3] = love.graphics.newQuad(2*16, 0, 16, 16, MAPATLAS:getDimensions())
@@ -61,12 +68,16 @@ function love.load(arg)
   MAPSHEET[6] = love.graphics.newQuad(5*16, 0, 16, 16, MAPATLAS:getDimensions())
   MAPSHEET[9] = love.graphics.newQuad(6*16, 0, 16, 16, MAPATLAS:getDimensions())
   MAPSHEET[8] = love.graphics.newQuad(7*16, 0, 16, 16, MAPATLAS:getDimensions())
-
+  
   S_INTRO = love.audio.newSource('assets/sfx/pacman_beginning.wav', 'static')
   S_DOT = love.audio.newSource('assets/sfx/pacman_chomp.wav', 'static')
   S_DEATH = love.audio.newSource('assets/sfx/pacman_death.wav', 'static')
   S_EATGHOST= love.audio.newSource('assets/sfx/pacman_eatghost.wav', 'static')
+  S_EATFRUIT= love.audio.newSource('assets/sfx/pacman_eatfruit.wav', 'static')
   S_READY = love.audio.newSource('assets/sfx/pacman_intermission.wav', 'static')
+  S_DEATH_DUR = S_DEATH:getDuration('seconds')
+  
+  getHighScore()
 
   S_INTRO:play()
 
@@ -82,8 +93,10 @@ function love.draw()
 end
 
 function love.keypressed(key, scancode, isRepeat)
-  if key == 'm' then 
+  if key == 'm' then
+    print('yes')
     if SOUNDVOL == 1 then SOUNDVOL = 0 else SOUNDVOL = 1 end
+    love.audio.setVolume (SOUNDVOL)
   end
   pacMan_states[CURRENTSTATE].keypressed(key)
 end
@@ -100,6 +113,16 @@ function drawMap()
       local collectChar = COLLECTABLE[j][i]
       if collectChar >0   then
         love.graphics.draw(MAPATLAS,MAPSHEET[collectChar],ii*BLOCKSIZE*PPM,jj*BLOCKSIZE*PPM,0,PPM,PPM )
+      end
+      local fruitChar = FRUIT[j][i]
+      if fruitChar >0   then
+        love.graphics.draw(
+          FRUITATLAS,FRUITSHEET[levelSpec[LEVEL].bonus],
+          ii*BLOCKSIZE*PPM + BLOCKSIZE*PPM*0.5,
+          jj*BLOCKSIZE*PPM + BLOCKSIZE*PPM*0.5,
+          0, PPM*1.6, PPM*1.6,
+          16*0.5, 16*0.5
+        )
       end
     end
   end
@@ -182,4 +205,15 @@ function linesFrom(file)
     lines[#lines + 1] = tonumber(line)
   end
   return lines
+end
+
+function getHighScore()
+  if fileExists( 'highscore.score' ) then
+    HIGHSCORE = linesFrom('highscore.score')
+  else
+    local f = io.open('highscore.score', 'w')
+    f:write('0')
+    f:close()
+    HIGHSCORE = {0}
+  end
 end

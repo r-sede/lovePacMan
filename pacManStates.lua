@@ -5,14 +5,16 @@ pacMan_states.title = {}
 
 
 pacMan_states.game.load = function (arg)
-  MAP,OBSTACLE,COLLECTABLE = getMaps('map')
-  READYTIMER = 4.5
+  MAP,OBSTACLE,COLLECTABLE,FRUIT = getMaps('map')
+  READYTIMER = 5
   LEVEL = 1
   pacMan.life = 2
   pacMan.score = 0
   pacMan:init()
   g_red:init()
   DOTS = 244
+  S_INTRO:stop()
+  S_READY:play()
 end
 
 pacMan_states.game.exit = function ()
@@ -34,6 +36,7 @@ pacMan_states.game.update = function (dt)
 end
 
 pacMan_states.game.catch = function ()
+
   S_DEATH:play()
   pacMan.life = pacMan.life - 1
   if pacMan.life < 0 then
@@ -45,10 +48,15 @@ pacMan_states.game.catch = function ()
   end
   pacMan:init()
   g_red:init()
-  READYTIMER = 4.5
+  READYTIMER = 3
 end
 
-
+pacMan_states.game.addBonus = function ()
+  local rx,ry = g_red.x, g_red.y
+  if not(rx > 11 and rx < 17 and ry > 16 and ry < 20) then
+    FRUIT[round(ry)][round(rx)] = 1
+  end
+end
 
 pacMan_states.game.draw = function ()
   drawMap()
@@ -65,6 +73,11 @@ pacMan_states.game.draw = function ()
   if READYTIMER >= 0 then
     love.graphics.setColor(240,240,0,1)
     love.graphics.print('READY!', (14.5 -3)*PPM*BLOCKSIZE,  20*PPM*BLOCKSIZE,0,2*PPM,1.5*PPM)
+    love.graphics.setColor(1,1,1,1)
+  end
+  if PAUSE then
+    love.graphics.setColor(240,240,0,1)
+    love.graphics.print('PAUSE!', (14.5 -4.5)*PPM*BLOCKSIZE,  17*PPM*BLOCKSIZE,0,3*PPM,3*PPM)
     love.graphics.setColor(1,1,1,1)
   end
 end

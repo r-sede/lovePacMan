@@ -34,18 +34,20 @@ local function getMaps()
   local iterator = love.filesystem.lines( 'assets/collectable.map' )
   
   local collectable = {}
-  
+  local fruits = {}
   
    rowN = 1
   for line in iterator do
     collectable[rowN] = {}
+    fruits[rowN] = {}
     for i=1,#line do
       table.insert(collectable[rowN], tonumber(line:sub(i,i)))
+      table.insert(fruits[rowN], 0)
     end
     rowN = rowN+1
   end
   
-  return map,obstacle,collectable
+  return map,obstacle,collectable,fruits
 end
 
 return getMaps

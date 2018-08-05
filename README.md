@@ -17,8 +17,10 @@ source: [the Pac-Man dossier](https://www.gamasutra.com/view/feature/3938/the_pa
 - [x] add menu to title screen (play/scores)
 - [x] add tunnel 
 - [x] correct the score when Pac-Man eats a ghost
-- [ ] add bonus (fruits)
+- [x] add bonus (fruits)
+- [ ] add visual indicator when ghosts are about to exit fright state
 - [ ] better pacMan control ? :/
+
 
 ---
 ## control:

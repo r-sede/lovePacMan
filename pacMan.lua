@@ -43,10 +43,16 @@ function pacMan.update(val,dt)
   if rndX > 27 and rndY == 18 then val.x = 4 return end
 
   local collectableChar = COLLECTABLE[rndY][rndX]
-    if collectableChar > 0 then
-      COLLECTABLE[rndY][rndX] = 0;
-      val:collect(collectableChar)
-    end
+  if collectableChar > 0 then
+    COLLECTABLE[rndY][rndX] = 0;
+    val:collect(collectableChar)
+  end
+
+  local fruitChar = FRUIT[rndY][rndX]
+  if fruitChar > 0 then
+    FRUIT[rndY][rndX] = 0;
+    val:collect('bonus')
+  end
 
 
   if(val.direction=="left") then
@@ -123,7 +129,11 @@ end
 
 function pacMan.collect(val, item)
   if not S_DOT:isPlaying() then S_DOT:play() end
-  if item == 8 then
+
+  if item == 'bonus' then
+    val.score = val.score + levelSpec[LEVEL].bonusPoints
+    S_EATFRUIT:play()
+  elseif item == 8 then
     val.score = val.score + 10
     
     --reagarder si on gagne une vie
@@ -142,13 +152,13 @@ function pacMan.collect(val, item)
     g_red:init()
     g_red.chaseIter = 1
     g_red.scatterIter = 1
-    MAP,OBSTACLE,COLLECTABLE = getMaps('map')
+    MAP,OBSTACLE,COLLECTABLE,FRUIT = getMaps('map')
     READYTIMER = 4.5
     DOTS = 244
     S_READY:play()
+  elseif DOTS == 244 - 70 or DOTS == 244 - 170 then
+    pacMan_states.game.addBonus()
   end
-
-  -- si plus de dots level +1 et init
 
 
 end
