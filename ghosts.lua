@@ -62,6 +62,7 @@ local function update (val, dt)
 
   if round(val.x) == round(pacMan.x) and round(val.y) == round(pacMan.y) then
     if val.state == 'fright' then
+      S_EATGHOST:play()
       pacMan.succCatch = pacMan.succCatch + 1
       if pacMan.succCatch > 5 then pacMan.succCatch = 5 end 
       pacMan.score = pacMan.score + CATCHPOINT[pacMan.succCatch]
@@ -180,7 +181,7 @@ g_red = {
     startX=14.5, startY=12+3,
     x=14.5, y=12+3,
     timer = 0,
-    speed = 7.4,
+    speed = 7.8,
     color = {r=1, g=0, b=0, a=0.7},
     dirX = 0,
     dirY = 0,

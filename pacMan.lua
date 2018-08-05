@@ -122,6 +122,7 @@ end
 
 
 function pacMan.collect(val, item)
+  if not S_DOT:isPlaying() then S_DOT:play() end
   if item == 8 then
     val.score = val.score + 10
     
@@ -142,9 +143,11 @@ function pacMan.collect(val, item)
     g_red.chaseIter = 1
     g_red.scatterIter = 1
     MAP,OBSTACLE,COLLECTABLE = getMaps('map')
-    READYTIMER = 3
+    READYTIMER = 4.5
     DOTS = 244
+    S_READY:play()
   end
+
   -- si plus de dots level +1 et init
 
 

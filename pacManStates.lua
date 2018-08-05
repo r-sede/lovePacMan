@@ -6,7 +6,7 @@ pacMan_states.title = {}
 
 pacMan_states.game.load = function (arg)
   MAP,OBSTACLE,COLLECTABLE = getMaps('map')
-  READYTIMER = 3
+  READYTIMER = 4.5
   LEVEL = 1
   pacMan.life = 2
   pacMan.score = 0
@@ -34,6 +34,7 @@ pacMan_states.game.update = function (dt)
 end
 
 pacMan_states.game.catch = function ()
+  S_DEATH:play()
   pacMan.life = pacMan.life - 1
   if pacMan.life < 0 then
     if pacMan.score > HIGHSCORE[1] then
@@ -44,7 +45,7 @@ pacMan_states.game.catch = function ()
   end
   pacMan:init()
   g_red:init()
-  READYTIMER = 3
+  READYTIMER = 4.5
 end
 
 
@@ -55,7 +56,7 @@ pacMan_states.game.draw = function ()
   g_red:draw()
   --score etc
   love.graphics.print('HIGH SCORE', PPM * VW * 0.33, 0,0,2*PPM,2*PPM)
-  love.graphics.print(math.max(HIGHSCORE[1],pacMan.score) , PPM * VW * 0.48, 23*PPM,0,2*PPM,2*PPM)
+  love.graphics.print(math.max(HIGHSCORE[1],pacMan.score) , PPM * VW * 0.40, 23*PPM,0,2*PPM,2*PPM)
   love.graphics.print('1UP', PPM * VW * 0.025, 0,0,2*PPM,2*PPM)
   love.graphics.print(pacMan.score, PPM * VW * 0.05, 23*PPM,0,2*PPM,2*PPM)
   for i=1,pacMan.life do 
@@ -92,7 +93,7 @@ pacMan_states.game.keypressed = function (key)
 
   end
 
-  if key == 'm' then --[[ mute ]] end
+  
   if key == 'space' then
     if not PAUSE then PAUSE = true else PAUSE = false end
   end
@@ -104,9 +105,9 @@ MENU = {'scores','play','credit' }
 MENUCURSOR = 1
 MENUPOS = 
 {
-  {(VW*PPM*0.4) - (20*PPM) , VH*0.5*PPM},
-  {(VW*PPM*0.4) - (20*PPM) , (VH*0.5*PPM) +(32*PPM)},
-  {(VW*PPM*0.4) - (20*PPM) , (VH*0.5*PPM) +(64*PPM)}
+  {(VW*PPM*0.35) - (20*PPM) , VH*0.5*PPM},
+  {(VW*PPM*0.35) - (20*PPM) , (VH*0.5*PPM) +(32*PPM)},
+  {(VW*PPM*0.35) - (20*PPM) , (VH*0.5*PPM) +(64*PPM)}
 }
 
 pacMan_states.title.load = function(arg)
@@ -124,15 +125,16 @@ end
 
 pacMan_states.title.draw = function(arg)
   love.graphics.draw(TITLESCREEN, 0, 0, 0, 2*PPM, 2*PPM)
-  love.graphics.print(MENU[1], VW*PPM*0.4, VH*0.5*PPM, 0, 2*PPM, 2*PPM)
-  love.graphics.print(MENU[2], VW*PPM*0.4,  (VH*0.5*PPM) +(32*PPM), 0, 2*PPM, 2*PPM)
-  love.graphics.print(MENU[3], VW*PPM*0.4,  (VH*0.5*PPM) +(64*PPM), 0, 2*PPM, 2*PPM)
+  love.graphics.print(HIGHSCORE[1], PPM * VW * 0.40, 23*PPM,0,2*PPM,2*PPM)
+  love.graphics.print(MENU[1], VW*PPM*0.35, VH*0.5*PPM, 0, 2*PPM, 2*PPM)
+  love.graphics.print(MENU[2], VW*PPM*0.35,  (VH*0.5*PPM) +(32*PPM), 0, 2*PPM, 2*PPM)
+  love.graphics.print(MENU[3], VW*PPM*0.35,  (VH*0.5*PPM) +(64*PPM), 0, 2*PPM, 2*PPM)
   love.graphics.print('>', MENUPOS[MENUCURSOR][1],MENUPOS[MENUCURSOR][2],0,2*PPM,2*PPM)
 end
 
 pacMan_states.title.keypressed = function(key)
   if key == 'return' then
-    if MENUCURSOR == 1 then pacMan_states.setState('scores') end
+    --if MENUCURSOR == 1 then pacMan_states.setState('scores') end
     if MENUCURSOR == 2 then pacMan_states.setState('game') end
     if MENUCURSOR == 3 then return end
   end
@@ -145,12 +147,7 @@ pacMan_states.title.keypressed = function(key)
     MENUCURSOR = MENUCURSOR + 1
     if MENUCURSOR > #MENU then MENUCURSOR = 1 end
   end
-  
-  
 end
-
-
-
 
 pacMan_states.setState = function(state)
   pacMan_states[CURRENTSTATE].exit()

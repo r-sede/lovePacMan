@@ -5,40 +5,50 @@ BLOCKSIZE = 16
 MAP = nil
 MAPSHEET = {}
 MAPATLAS= nil
-DEBUG = true
+DEBUG = false
 DOTS = 244
 PAUSE = false
 TITLESCREEN  = nil
 CURRENTSTATE = 'title'
 LEVEL=1
-READYTIMER = 3
+READYTIMER = 4.5
 FONT = nil
 HIGHSCORE = {}
 CATCHPOINT = {200,400,800,1600,12000}
 SAVEDIR = nil
-
+DEBUG_PLACEHOLDER = 0
+SOUNDVOL = 1
+S_INTRO, S_DOT, S_DEATH, S_EATGHOST, S_READY =  nil
 
 function love.load(arg)
-  love.math.setRandomSeed(love.timer.getTime())
-  love.graphics.setDefaultFilter('nearest')
   require"pacMan"
   require"ghosts"
   require"pacManStates"
   require"levelSpec"
   getMaps = require('map')
-  love.window.setMode((PPM * VW)   + 300  , PPM * VH)
-  love.keyboard.setKeyRepeat(true)
---[[   SAVEDIR =  love.filesystem.getSaveDirectory( )
-  print(fileExists( SAVEDIR..'/highscore.score' )) ]]
+
+  love.math.setRandomSeed(love.timer.getTime())
+  love.graphics.setDefaultFilter('nearest')
+
   if fileExists( 'highscore.score' ) then
     HIGHSCORE = linesFrom('highscore.score')
-    --print(#HIGHSCORE)
   else
     local f = io.open('highscore.score', 'w')
     f:write('0')
     f:close()
     HIGHSCORE = {0}
   end
+  -- Cette ligne permet d'afficher des traces dans la console pendant l'éxécution
+  if arg[#arg] == "-debug" then
+    DEBUG_PLACEHOLDER = 300
+    DEBUG = true
+    print('\n')
+  end
+
+  love.window.setMode((PPM * VW)   + DEBUG_PLACEHOLDER  , PPM * VH)
+  love.keyboard.setKeyRepeat(true)
+
+
   FONT = love.graphics.newFont('assets/fonts/emulogic.ttf', 8)
   love.graphics.setFont(FONT)
   MAPATLAS = love.graphics.newImage('assets/img/pacmanSpriteSheet.png')
@@ -51,6 +61,15 @@ function love.load(arg)
   MAPSHEET[6] = love.graphics.newQuad(5*16, 0, 16, 16, MAPATLAS:getDimensions())
   MAPSHEET[9] = love.graphics.newQuad(6*16, 0, 16, 16, MAPATLAS:getDimensions())
   MAPSHEET[8] = love.graphics.newQuad(7*16, 0, 16, 16, MAPATLAS:getDimensions())
+
+  S_INTRO = love.audio.newSource('assets/sfx/pacman_beginning.wav', 'static')
+  S_DOT = love.audio.newSource('assets/sfx/pacman_chomp.wav', 'static')
+  S_DEATH = love.audio.newSource('assets/sfx/pacman_death.wav', 'static')
+  S_EATGHOST= love.audio.newSource('assets/sfx/pacman_eatghost.wav', 'static')
+  S_READY = love.audio.newSource('assets/sfx/pacman_intermission.wav', 'static')
+
+  S_INTRO:play()
+
 end
 
 function love.update(dt)
@@ -63,6 +82,9 @@ function love.draw()
 end
 
 function love.keypressed(key, scancode, isRepeat)
+  if key == 'm' then 
+    if SOUNDVOL == 1 then SOUNDVOL = 0 else SOUNDVOL = 1 end
+  end
   pacMan_states[CURRENTSTATE].keypressed(key)
 end
 
