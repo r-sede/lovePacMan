@@ -135,7 +135,7 @@ function pacMan.collect(val, item)
     S_EATFRUIT:play()
   elseif item == 8 then
     val.score = val.score + 10
-    
+    DOTS = DOTS - 1
     --reagarder si on gagne une vie
   elseif item == 9 then
     val.score = val.score + 50
@@ -143,8 +143,8 @@ function pacMan.collect(val, item)
     val.timer = 0
     g_red.timer = 0
     setState(g_red, 'fright')
+    DOTS = DOTS - 1
   end
-  DOTS = DOTS - 1
   if DOTS <= 0 then
     LEVEL = LEVEL + 1
     if LEVEL >= 21 then LEVEL = 21 end

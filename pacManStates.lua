@@ -53,7 +53,7 @@ end
 
 pacMan_states.game.addBonus = function ()
   local rx,ry = g_red.x, g_red.y
-  if not(rx > 11 and rx < 17 and ry > 16 and ry < 20) then
+  if not(rx > 11 and rx < 17 and ry > 16 and ry < 20 )or g_red.state == 'goHome' then
     FRUIT[round(ry)][round(rx)] = 1
   end
 end

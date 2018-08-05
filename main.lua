@@ -17,12 +17,11 @@ READYTIMER = 4.5
 FONT = nil
 HIGHSCORE = {}
 CATCHPOINT = {200,400,800,1600,12000}
-SAVEDIR = nil
+
 DEBUG_PLACEHOLDER = 0
 SOUNDVOL = 1
 S_INTRO, S_DOT, S_DEATH, S_EATGHOST, S_READY =  nil
-S_DEATH_DUR = nil
-GOFLAG = false
+
 
 function love.load(arg)
   love.math.setRandomSeed(love.timer.getTime())
