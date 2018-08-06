@@ -16,7 +16,7 @@ source: [the Pac-Man dossier](https://www.gamasutra.com/view/feature/3938/the_pa
 - [x] fix frightened ghost texture
 - [x] add menu to title screen (play/scores)
 - [x] add tunnel 
-- [x] correct the score when Pac-Man eats a ghost
+- [x] correct score when Pac-Man eats a ghost
 - [x] add bonus (fruits)
 - [x] add visual indicator when ghosts are about to exit fright state
 - [ ] better pacMan control ? :/
@@ -51,4 +51,9 @@ $ sudo apt-get update
 $ git clone https://github.com/r-sede/lovePacMan.git
 $ cd lovePacMan
 $ love .
+```
+
+show output in console + additional debug info on screen:
+```
+$ love . -debug
 ```

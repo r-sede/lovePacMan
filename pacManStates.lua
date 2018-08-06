@@ -12,6 +12,7 @@ pacMan_states.game.load = function (arg)
   pacMan.score = 0
   pacMan:init()
   g_red:init()
+  g_pink:init()
   DOTS = 244
   S_INTRO:stop()
   S_READY:play()
@@ -28,10 +29,13 @@ pacMan_states.game.update = function (dt)
   end
   animate(pacMan, dt)
   animate(g_red, dt)
+  animate(g_pink, dt)
   handleDirection(pacMan)
   handleDirection(g_red)
+  handleDirection(g_pink)
   pacMan:update(dt)
   g_red:update(dt)
+  g_pink:update(dt)
 
 end
 
@@ -48,20 +52,38 @@ pacMan_states.game.catch = function ()
   end
   pacMan:init()
   g_red:init()
+  g_pink:init()
   READYTIMER = 3
 end
 
 pacMan_states.game.addBonus = function ()
-  local rx,ry = g_red.x, g_red.y
-  if not(rx > 11 and rx < 17 and ry > 16 and ry < 20 )or g_red.state == 'goHome' then
-    FRUIT[round(ry)][round(rx)] = 1
+  local rand = math.random( 1,2 )
+  
+  if rand == 1 then
+    local rx,ry = g_red.x, g_red.y
+    if not(rx > 11 and rx < 17 and ry > 16 and ry < 20 )or not g_red.state == 'goHome' then
+      FRUIT[round(ry)][round(rx)] = 1
+    else
+      pacMan_states.game.addBonus()
+      return
+    end
+  elseif rand == 2 then
+    local px,py = g_pink.x, g_pink.y
+    if not(px > 11 and px < 17 and py > 16 and py < 20 )or not g_pink.state == 'goHome' then
+      FRUIT[round(py)][round(px)] = 1
+    else
+      pacMan_states.game.addBonus()
+      return
+    end    
   end
+
 end
 
 pacMan_states.game.draw = function ()
   drawMap()
   pacMan:draw()
   g_red:draw()
+  g_pink:draw()
   --score etc
   love.graphics.print('HIGH SCORE', PPM * VW * 0.33, 0,0,2*PPM,2*PPM)
   love.graphics.print(math.max(HIGHSCORE[1],pacMan.score) , PPM * VW * 0.40, 23*PPM,0,2*PPM,2*PPM)

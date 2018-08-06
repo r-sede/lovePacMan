@@ -183,7 +183,7 @@ local function draw (val)
 end
 
 
----------------------------------------------------------------------------
+--------------------------------blinky-------------------------------------
 ---------------------------------RED---------------------------------------
 
 g_red = {
@@ -307,6 +307,144 @@ g_red.init = function(val)
   val.blinkTime = 0
 end
 
-g_red.getNextTile = function(val)
-  getNextTile(val)
+
+--------------------------------pinky-------------------------------------
+---------------------------------PINK---------------------------------------
+
+g_pink = {
+  startX=12, startY=18,
+  x=12, y=19,
+  timer = 0,
+  speed = 7.8,
+  color = {r=1, g=0, b=1, a=0.7},
+  dirX = 0,
+  dirY = 0,
+  direction = "up",
+  animDir = "up",
+  curAtlas = "atlas",
+  keyframe=1,
+  nbrFrame=2,
+  fps=5,
+  angle=0,
+  scaleSignX= 1,
+  scaleSignY= 1,
+  state = "exitHome",
+  targetX = 15,
+  targetY = 15,
+  speedCoef = 0.75,
+  nextDecision = "up",
+  nextX = 12,
+  nextY = 17,
+  chaseIter = 1,
+  scatterIter = 1,
+  blink = false,
+  blinkTime = 0
+}
+g_pink.animTimer = 1 /g_pink.fps
+g_pink.atlas= love.graphics.newImage('assets/img/fantomesPacman2.png')
+g_pink.frightAtlas = frightAtlas
+g_pink.sprites = {}
+g_pink.sprites.right = {
+  love.graphics.newQuad(4*16,0,16,16,g_pink.atlas:getDimensions()),
+  love.graphics.newQuad(1*16,0,16,16,g_pink.atlas:getDimensions()),
+}
+g_pink.sprites.down = {
+  love.graphics.newQuad(2*16,0,16,16,g_pink.atlas:getDimensions()),
+  love.graphics.newQuad(1*16,0,16,16,g_pink.atlas:getDimensions()),
+}
+g_pink.sprites.left = {
+  love.graphics.newQuad(4*16,0,16,16,g_pink.atlas:getDimensions()),
+  love.graphics.newQuad(1*16,0,16,16,g_pink.atlas:getDimensions()),
+}
+g_pink.sprites.up = {
+  love.graphics.newQuad(6*16,0,16,16,g_pink.atlas:getDimensions()),
+  love.graphics.newQuad(1*16,0,16,16,g_pink.atlas:getDimensions()),
+}
+g_pink.sprites.fright = {
+  love.graphics.newQuad(0*16,0,16,16,frightAtlas:getDimensions()),
+  love.graphics.newQuad(1*16,0,16,16,frightAtlas:getDimensions()),
+}
+
+
+g_pink.draw = function(val)
+draw(val)
+end
+
+g_pink.update = function(val, dt)
+val.timer = val.timer  + dt
+
+if val.state == 'chase' then
+  val.speedCoef = levelSpec[LEVEL].ghostSpeed
+
+  if pacMan.direction == 'up' then
+    val.targetX, val.targetY = math.max(round(pacMan.x)-4, 4), math.max(round(pacMan.y)-4,1)
+  elseif pacMan.direction == 'right' then
+    val.targetX, val.targetY = math.min(round(pacMan.x)+4, 28), round(pacMan.y)   
+  elseif pacMan.direction == 'down' then
+    val.targetX, val.targetY = round(pacMan.x), math.min(round(pacMan.y)+4,34)
+  elseif pacMan.direction == 'left' then
+    val.targetX, val.targetY = math.max(round(pacMan.x)-4, 1), round(pacMan.y)
+  end
+
+  if val.timer >= levelSpec[LEVEL].chaseTime[val.chaseIter] then
+    val.chaseIter = val.chaseIter + 1
+    if val.chaseIter > 4 then val.chaseIter = 4 end
+    val.timer = 0
+    setState(val, 'scatter')
+  end
+elseif val.state == 'scatter' then
+  val.speedCoef = levelSpec[LEVEL].ghostSpeed
+  if val.timer >= levelSpec[LEVEL].scatterTime[val.scatterIter] then
+    val.scatterIter = val.scatterIter + 1
+    if val.scatterIter > 4 then val.scatterIter = 4 end
+    val.timer = 0
+    setState(val, 'chase')
+  end
+  val.targetX, val.targetY = 5, 1
+elseif val.state == 'fright' then
+  val.speedCoef =levelSpec[LEVEL].ghostFrightSpeed
+  if val.timer >= levelSpec[LEVEL].frightTime then
+    pacMan.speedCoef = levelSpec[LEVEL].pacManSpeed
+    val.timer = 0
+    val.blink = false
+    val.blinkTime = 0
+    setState(val, 'chase')
+  elseif val.timer >= levelSpec[LEVEL].frightTime - 2 then
+    val.blink = true
+    val.blinkTime = val.blinkTime + 3*dt
+  end
+elseif val.state == 'exitHome' then
+  if round(val.x) == val.targetX and round(val.y) == val.targetY then
+  val.timer = 0
+  setState(val, 'scatter')
+  end
+  val.targetX, val.targetY = 15, 15
+end
+update(val, dt)
+end
+
+g_pink.init = function(val)
+val.startX=12
+val.startY=18
+val.x=12
+val.y=19
+val.timer = 0
+val.dirX = 0
+val.dirY = 0
+val.direction = "up"
+val.animDir = "up"
+val.curAtlas = "atlas"
+val.keyframe=1
+val.angle=0
+val.scaleSignX= 1
+val.scaleSignY= 1
+val.state = "exitHome"
+val.targetX = 15
+val.targetY = 5
+val.speedCoef = levelSpec[LEVEL].ghostSpeed
+val.nextDecision = "up"
+val.nextX = 12
+val.nextY = 17
+val.blink = false
+val.blinkTime = 0
 end
