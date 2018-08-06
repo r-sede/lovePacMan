@@ -19,6 +19,7 @@ source: [the Pac-Man dossier](https://www.gamasutra.com/view/feature/3938/the_pa
 - [x] correct score when Pac-Man eats a ghost
 - [x] add bonus (fruits)
 - [x] add visual indicator when ghosts are about to exit fright state
+- [ ] fix ghost being transparent (wtf ?!!)
 - [ ] better pacMan control ? :/
 
 

@@ -136,6 +136,7 @@ function pacMan.collect(val, item)
   elseif item == 8 then
     val.score = val.score + 10
     DOTS = DOTS - 1
+    COUNTDOT = COUNTDOT + 1
     --reagarder si on gagne une vie
   elseif item == 9 then
     val.score = val.score + 50
@@ -143,9 +144,12 @@ function pacMan.collect(val, item)
     val.timer = 0
     g_red.timer = 0
     g_pink.timer = 0
+    g_blue.timer = 0
     setState(g_red, 'fright')
     setState(g_pink, 'fright')
+    setState(g_blue, 'fright')
     DOTS = DOTS - 1
+    COUNTDOT = COUNTDOT + 1
   end
   if DOTS <= 0 then
     LEVEL = LEVEL + 1
@@ -153,10 +157,13 @@ function pacMan.collect(val, item)
     pacMan:init()
     g_red:init()
     g_pink:init()
+    g_blue:init()
     g_red.chaseIter = 1
     g_pink.chaseIter = 1
+    g_blue.chaseIter = 1
     g_red.scatterIter = 1
     g_pink.scatterIter = 1
+    g_blue.scatterIter = 1
     MAP,OBSTACLE,COLLECTABLE,FRUIT = getMaps('map')
     READYTIMER = 4.5
     DOTS = 244

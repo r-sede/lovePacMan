@@ -9,6 +9,7 @@ MAPATLAS= nil
 FRUITATLAS = nil
 DEBUG = false
 DOTS = 244
+COUNTDOT = 0
 PAUSE = false
 TITLESCREEN  = nil
 CURRENTSTATE = 'title'

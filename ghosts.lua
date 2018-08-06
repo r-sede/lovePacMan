@@ -61,7 +61,8 @@ local function update (val, dt)
   end
 
   if round(val.x) == round(pacMan.x) and round(val.y) == round(pacMan.y) then
-    if val.state == 'fright' then
+    if val.state == 'goHome' then
+    elseif val.state == 'fright' then
       S_EATGHOST:play()
       pacMan.succCatch = pacMan.succCatch + 1
       if pacMan.succCatch > 5 then pacMan.succCatch = 5 end 
@@ -190,7 +191,7 @@ g_red = {
     startX=14.5, startY=12+3,
     x=14.5, y=12+3,
     timer = 0,
-    speed = 7.8,
+    speed = 7.4,
     color = {r=1, g=0, b=0, a=0.7},
     dirX = 0,
     dirY = 0,
@@ -315,7 +316,7 @@ g_pink = {
   startX=12, startY=18,
   x=12, y=19,
   timer = 0,
-  speed = 7.8,
+  speed = 7.4,
   color = {r=1, g=0, b=1, a=0.7},
   dirX = 0,
   dirY = 0,
@@ -377,7 +378,7 @@ if val.state == 'chase' then
   val.speedCoef = levelSpec[LEVEL].ghostSpeed
 
   if pacMan.direction == 'up' then
-    val.targetX, val.targetY = math.max(round(pacMan.x)-4, 4), math.max(round(pacMan.y)-4,1)
+    val.targetX, val.targetY = math.max(round(pacMan.x)-4, 1), math.max(round(pacMan.y)-4,4)
   elseif pacMan.direction == 'right' then
     val.targetX, val.targetY = math.min(round(pacMan.x)+4, 28), round(pacMan.y)   
   elseif pacMan.direction == 'down' then
@@ -440,10 +441,152 @@ val.scaleSignX= 1
 val.scaleSignY= 1
 val.state = "exitHome"
 val.targetX = 15
-val.targetY = 5
+val.targetY = 15
 val.speedCoef = levelSpec[LEVEL].ghostSpeed
 val.nextDecision = "up"
 val.nextX = 12
+val.nextY = 17
+val.blink = false
+val.blinkTime = 0
+end
+
+---------------------------------inky---------------------------------------
+---------------------------------BLUE---------------------------------------
+
+g_blue = {
+  startX=14, startY=18,
+  x=14, y=19,
+  timer = 0,
+  speed = 7.4,
+  color = {r=0, g=0, b=1, a=0.7},
+  dirX = 0,
+  dirY = 0,
+  direction = "up",
+  animDir = "up",
+  curAtlas = "atlas",
+  keyframe=1,
+  nbrFrame=2,
+  fps=5,
+  angle=0,
+  scaleSignX= 1,
+  scaleSignY= 1,
+  state = "exitHome",
+  targetX = 15,
+  targetY = 14,
+  speedCoef = 0.75,
+  nextDecision = "up",
+  nextX = 14,
+  nextY = 17,
+  chaseIter = 1,
+  scatterIter = 1,
+  blink = false,
+  blinkTime = 0
+}
+g_blue.animTimer = 1 /g_blue.fps
+g_blue.atlas= love.graphics.newImage('assets/img/fantomesPacman.png')
+g_blue.frightAtlas = frightAtlas
+g_blue.sprites = {}
+g_blue.sprites.right = {
+  love.graphics.newQuad(4*16,0,16,16,g_blue.atlas:getDimensions()),
+  love.graphics.newQuad(1*16,0,16,16,g_blue.atlas:getDimensions()),
+}
+g_blue.sprites.down = {
+  love.graphics.newQuad(2*16,0,16,16,g_blue.atlas:getDimensions()),
+  love.graphics.newQuad(1*16,0,16,16,g_blue.atlas:getDimensions()),
+}
+g_blue.sprites.left = {
+  love.graphics.newQuad(4*16,0,16,16,g_blue.atlas:getDimensions()),
+  love.graphics.newQuad(1*16,0,16,16,g_blue.atlas:getDimensions()),
+}
+g_blue.sprites.up = {
+  love.graphics.newQuad(6*16,0,16,16,g_blue.atlas:getDimensions()),
+  love.graphics.newQuad(1*16,0,16,16,g_blue.atlas:getDimensions()),
+}
+g_blue.sprites.fright = {
+  love.graphics.newQuad(0*16,0,16,16,frightAtlas:getDimensions()),
+  love.graphics.newQuad(1*16,0,16,16,frightAtlas:getDimensions()),
+}
+
+
+g_blue.draw = function(val)
+draw(val)
+end
+
+g_blue.update = function(val, dt)
+  if COUNTDOT < 30 and LEVEL < 3 then return end
+val.timer = val.timer  + dt
+
+if val.state == 'chase' then
+  val.speedCoef = levelSpec[LEVEL].ghostSpeed
+
+  if pacMan.direction == 'up' then
+    val.targetX, val.targetY = math.max(round(pacMan.x)-4, 1), math.max(round(pacMan.y)-4,4)
+  elseif pacMan.direction == 'right' then
+    val.targetX, val.targetY = math.min(round(pacMan.x)+4, 28), round(pacMan.y)   
+  elseif pacMan.direction == 'down' then
+    val.targetX, val.targetY = round(pacMan.x), math.min(round(pacMan.y)+4,34)
+  elseif pacMan.direction == 'left' then
+    val.targetX, val.targetY = math.max(round(pacMan.x)-4, 1), round(pacMan.y)
+  end
+
+  if val.timer >= levelSpec[LEVEL].chaseTime[val.chaseIter] then
+    val.chaseIter = val.chaseIter + 1
+    if val.chaseIter > 4 then val.chaseIter = 4 end
+    val.timer = 0
+    setState(val, 'scatter')
+  end
+elseif val.state == 'scatter' then
+  val.speedCoef = levelSpec[LEVEL].ghostSpeed
+  if val.timer >= levelSpec[LEVEL].scatterTime[val.scatterIter] then
+    val.scatterIter = val.scatterIter + 1
+    if val.scatterIter > 4 then val.scatterIter = 4 end
+    val.timer = 0
+    setState(val, 'chase')
+  end
+  val.targetX, val.targetY = 1, 36
+elseif val.state == 'fright' then
+  val.speedCoef =levelSpec[LEVEL].ghostFrightSpeed
+  if val.timer >= levelSpec[LEVEL].frightTime then
+    pacMan.speedCoef = levelSpec[LEVEL].pacManSpeed
+    val.timer = 0
+    val.blink = false
+    val.blinkTime = 0
+    setState(val, 'chase')
+  elseif val.timer >= levelSpec[LEVEL].frightTime - 2 then
+    val.blink = true
+    val.blinkTime = val.blinkTime + 3*dt
+  end
+elseif val.state == 'exitHome' then
+  if round(val.x) == val.targetX and round(val.y) == val.targetY then
+  val.timer = 0
+  setState(val, 'scatter')
+  end
+  val.targetX, val.targetY = 15, 15
+end
+update(val, dt)
+end
+
+g_blue.init = function(val)
+val.startX=14
+val.startY=18
+val.x=14
+val.y=19
+val.timer = 0
+val.dirX = 0
+val.dirY = 0
+val.direction = "up"
+val.animDir = "up"
+val.curAtlas = "atlas"
+val.keyframe=1
+val.angle=0
+val.scaleSignX= 1
+val.scaleSignY= 1
+val.state = "exitHome"
+val.targetX = 15
+val.targetY = 15
+val.speedCoef = levelSpec[LEVEL].ghostSpeed
+val.nextDecision = "up"
+val.nextX = 14
 val.nextY = 17
 val.blink = false
 val.blinkTime = 0
