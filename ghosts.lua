@@ -145,13 +145,18 @@ local function update (val, dt)
       val.dirY = 1
   end
 
-  val.animDir = val.direction
+  if not val.state == 'fright' then
+    val.animDir = val.direction
+  end
   val.x = val.x + dt * val.speed * val.speedCoef * val.dirX
   val.y = val.y + dt * val.speed * val.speedCoef * val.dirY
 
 end
 
 local function draw (val)
+  if val.blink then
+    love.graphics.setColor(1,1,1,val.blinkTime%1)
+  end
   love.graphics.draw(val[val.curAtlas], val.sprites[val.animDir][val.keyframe],
   (val.x-1)*BLOCKSIZE*PPM + BLOCKSIZE*PPM*0.5,
   (val.y-1)*BLOCKSIZE*PPM + BLOCKSIZE*PPM*0.5,
@@ -160,6 +165,10 @@ local function draw (val)
   val.scaleSignY * PPM * 1.6,
   16*0.5,
   16*0.5)
+
+  if val.blink then
+    love.graphics.setColor(1,1,1,1)
+  end
 
   if DEBUG then 
     love.graphics.setColor(val.color.r,val.color.g,val.color.b,val.color.a)
@@ -203,6 +212,8 @@ g_red = {
     nextY = 12+3,
     chaseIter = 1,
     scatterIter = 1,
+    blink = false,
+    blinkTime = 0
   }
   g_red.animTimer = 1 /g_red.fps
   g_red.atlas= love.graphics.newImage('assets/img/fantomesPacman4.png')
@@ -259,7 +270,12 @@ g_red.update = function(val, dt)
     if val.timer >= levelSpec[LEVEL].frightTime then
       pacMan.speedCoef = levelSpec[LEVEL].pacManSpeed
       val.timer = 0
+      val.blink = false
+      val.blinkTime = 0
       setState(val, 'chase')
+    elseif val.timer >= levelSpec[LEVEL].frightTime - 2 then
+      val.blink = true
+      val.blinkTime = val.blinkTime + 3*dt
     end
   end
   update(val, dt)
@@ -287,6 +303,8 @@ g_red.init = function(val)
   val.nextDecision = "right"
   val.nextX = 16
   val.nextY = 12+3
+  val.blink = false
+  val.blinkTime = 0
 end
 
 g_red.getNextTile = function(val)

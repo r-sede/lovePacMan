@@ -93,7 +93,6 @@ end
 
 function love.keypressed(key, scancode, isRepeat)
   if key == 'm' then
-    print('yes')
     if SOUNDVOL == 1 then SOUNDVOL = 0 else SOUNDVOL = 1 end
     love.audio.setVolume (SOUNDVOL)
   end
