@@ -1,6 +1,7 @@
 function setState(val, state)
+  if state == 'fright' and val.state == 'exitHome' then return end
   val.state = state
-  if state == 'fright' then pacMan.speedCoef = levelSpec[LEVEL].pacManFrightSpeed end
+  -- if state == 'fright' then pacMan.speedCoef = levelSpec[LEVEL].pacManFrightSpeed end
   local res = ''
   if val.direction == 'up' then
     res = 'down'
@@ -46,6 +47,7 @@ local function getSurTile(x,y)
 end
 
 local function update (val, dt)
+  
 
   if val.state == 'goHome' then
     if round(val.x) == round(val.startX) and round(val.y) == round(val.startY) then
@@ -513,21 +515,32 @@ draw(val)
 end
 
 g_blue.update = function(val, dt)
-  if COUNTDOT < 30 and LEVEL < 3 then return end
+  if 244 - DOTS < 30 and LEVEL < 3 then return end
 val.timer = val.timer  + dt
 
 if val.state == 'chase' then
   val.speedCoef = levelSpec[LEVEL].ghostSpeed
 
+  local blinkyTileX, blinkyTileY = round(g_red.x), round(g_red.y)
+  local symX,symY = nil, nil
+
   if pacMan.direction == 'up' then
-    val.targetX, val.targetY = math.max(round(pacMan.x)-4, 1), math.max(round(pacMan.y)-4,4)
+    symX, symY = round(pacMan.x)-2, round(pacMan.y)-2
   elseif pacMan.direction == 'right' then
-    val.targetX, val.targetY = math.min(round(pacMan.x)+4, 28), round(pacMan.y)   
+    symX, symY = round(pacMan.x)+2, round(pacMan.y)   
   elseif pacMan.direction == 'down' then
-    val.targetX, val.targetY = round(pacMan.x), math.min(round(pacMan.y)+4,34)
+    symX, symY = round(pacMan.x), round(pacMan.y)+2
   elseif pacMan.direction == 'left' then
-    val.targetX, val.targetY = math.max(round(pacMan.x)-4, 1), round(pacMan.y)
+    symX, symY = round(pacMan.x)-2, round(pacMan.y)
   end
+
+  local dx = symX - blinkyTileX
+  local dy = symY - blinkyTileY
+
+  val.targetX = clamp(symX + dx, 1, 28)
+  val.targetY = clamp(symY + dy, 1, 34)
+
+
 
   if val.timer >= levelSpec[LEVEL].chaseTime[val.chaseIter] then
     val.chaseIter = val.chaseIter + 1

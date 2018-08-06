@@ -9,7 +9,6 @@ MAPATLAS= nil
 FRUITATLAS = nil
 DEBUG = false
 DOTS = 244
-COUNTDOT = 0
 PAUSE = false
 TITLESCREEN  = nil
 CURRENTSTATE = 'title'
@@ -175,6 +174,13 @@ function round(val)
   local floor = math.floor(val)
   if(val%1 >=0.5 ) then return floor+1 end
   return floor
+end
+
+function clamp (val, min, max)
+  if val < min then return min
+  elseif val > max then return max
+  else  return val 
+  end
 end
 
 function writeScore()

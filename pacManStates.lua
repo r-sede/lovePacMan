@@ -15,7 +15,7 @@ pacMan_states.game.load = function (arg)
   g_pink:init()
   g_blue:init()
   DOTS = 244
-  COUNTDOT=0
+
   S_INTRO:stop()
   S_READY:play()
 end
@@ -60,7 +60,7 @@ pacMan_states.game.catch = function ()
   g_pink:init()
   g_blue:init()
   READYTIMER = 3
-  COUNTDOT = 0
+
 end
 
 pacMan_states.game.addBonus = function ()

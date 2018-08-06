@@ -136,7 +136,7 @@ function pacMan.collect(val, item)
   elseif item == 8 then
     val.score = val.score + 10
     DOTS = DOTS - 1
-    COUNTDOT = COUNTDOT + 1
+
     --reagarder si on gagne une vie
   elseif item == 9 then
     val.score = val.score + 50
@@ -145,11 +145,18 @@ function pacMan.collect(val, item)
     g_red.timer = 0
     g_pink.timer = 0
     g_blue.timer = 0
+    g_red.blinkTime = 0
+    g_pink.blinkTime = 0
+    g_blue.blinkTime = 0
+    g_red.blink = false
+    g_pink.blink = false
+    g_blue.blink = false
+    val.speedCoef = levelSpec[LEVEL].pacManFrightSpeed
     setState(g_red, 'fright')
     setState(g_pink, 'fright')
     setState(g_blue, 'fright')
     DOTS = DOTS - 1
-    COUNTDOT = COUNTDOT + 1
+
   end
   if DOTS <= 0 then
     LEVEL = LEVEL + 1
@@ -167,6 +174,7 @@ function pacMan.collect(val, item)
     MAP,OBSTACLE,COLLECTABLE,FRUIT = getMaps('map')
     READYTIMER = 4.5
     DOTS = 244
+
     S_READY:play()
   elseif DOTS == 244 - 70 or DOTS == 244 - 170 then
     pacMan_states.game.addBonus()
