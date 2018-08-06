@@ -145,16 +145,20 @@ function pacMan.collect(val, item)
     g_red.timer = 0
     g_pink.timer = 0
     g_blue.timer = 0
+    g_oran.timer = 0
     g_red.blinkTime = 0
     g_pink.blinkTime = 0
     g_blue.blinkTime = 0
+    g_oran.blinkTime = 0
     g_red.blink = false
     g_pink.blink = false
     g_blue.blink = false
+    g_oran.blink = false
     val.speedCoef = levelSpec[LEVEL].pacManFrightSpeed
     setState(g_red, 'fright')
     setState(g_pink, 'fright')
     setState(g_blue, 'fright')
+    setState(g_oran, 'fright')
     DOTS = DOTS - 1
 
   end
@@ -165,12 +169,15 @@ function pacMan.collect(val, item)
     g_red:init()
     g_pink:init()
     g_blue:init()
+    g_oran:init()
     g_red.chaseIter = 1
     g_pink.chaseIter = 1
     g_blue.chaseIter = 1
+    g_oran.chaseIter = 1
     g_red.scatterIter = 1
     g_pink.scatterIter = 1
     g_blue.scatterIter = 1
+    g_oran.scatterIter = 1
     MAP,OBSTACLE,COLLECTABLE,FRUIT = getMaps('map')
     READYTIMER = 4.5
     DOTS = 244

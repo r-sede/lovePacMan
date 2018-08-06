@@ -521,7 +521,7 @@ val.timer = val.timer  + dt
 if val.state == 'chase' then
   val.speedCoef = levelSpec[LEVEL].ghostSpeed
 
-  local blinkyTileX, blinkyTileY = round(g_red.x), round(g_red.y)
+
   local symX,symY = nil, nil
 
   if pacMan.direction == 'up' then
@@ -534,11 +534,9 @@ if val.state == 'chase' then
     symX, symY = round(pacMan.x)-2, round(pacMan.y)
   end
 
-  local dx = symX - blinkyTileX
-  local dy = symY - blinkyTileY
 
-  val.targetX = clamp(symX + dx, 1, 28)
-  val.targetY = clamp(symY + dy, 1, 34)
+  val.targetX = clamp(symX + symX - round(g_red.x), 1, 28)
+  val.targetY = clamp(symY + symY - round(g_red.y), 1, 34)
 
 
 
@@ -600,6 +598,144 @@ val.targetY = 15
 val.speedCoef = levelSpec[LEVEL].ghostSpeed
 val.nextDecision = "up"
 val.nextX = 14
+val.nextY = 17
+val.blink = false
+val.blinkTime = 0
+end
+
+--------------------------------clyde---------------------------------------
+-------------------------------ORANGE---------------------------------------
+
+g_oran = {
+  startX=16, startY=18,
+  x=16, y=19,
+  timer = 0,
+  speed = 7.4,
+  color = {r=1, g=211/255, b=32/255, a=0.7},
+  dirX = 0,
+  dirY = 0,
+  direction = "up",
+  animDir = "up",
+  curAtlas = "atlas",
+  keyframe=1,
+  nbrFrame=2,
+  fps=5,
+  angle=0,
+  scaleSignX= 1,
+  scaleSignY= 1,
+  state = "exitHome",
+  targetX = 15,
+  targetY = 14,
+  speedCoef = 0.75,
+  nextDecision = "up",
+  nextX = 16,
+  nextY = 17,
+  chaseIter = 1,
+  scatterIter = 1,
+  blink = false,
+  blinkTime = 0
+}
+g_oran.animTimer = 1 /g_oran.fps
+g_oran.atlas= love.graphics.newImage('assets/img/fantomesPacman3.png')
+g_oran.frightAtlas = frightAtlas
+g_oran.sprites = {}
+g_oran.sprites.right = {
+  love.graphics.newQuad(4*16,0,16,16,g_oran.atlas:getDimensions()),
+  love.graphics.newQuad(1*16,0,16,16,g_oran.atlas:getDimensions()),
+}
+g_oran.sprites.down = {
+  love.graphics.newQuad(2*16,0,16,16,g_oran.atlas:getDimensions()),
+  love.graphics.newQuad(1*16,0,16,16,g_oran.atlas:getDimensions()),
+}
+g_oran.sprites.left = {
+  love.graphics.newQuad(4*16,0,16,16,g_oran.atlas:getDimensions()),
+  love.graphics.newQuad(1*16,0,16,16,g_oran.atlas:getDimensions()),
+}
+g_oran.sprites.up = {
+  love.graphics.newQuad(6*16,0,16,16,g_oran.atlas:getDimensions()),
+  love.graphics.newQuad(1*16,0,16,16,g_oran.atlas:getDimensions()),
+}
+g_oran.sprites.fright = {
+  love.graphics.newQuad(0*16,0,16,16,frightAtlas:getDimensions()),
+  love.graphics.newQuad(1*16,0,16,16,frightAtlas:getDimensions()),
+}
+
+
+g_oran.draw = function(val)
+draw(val)
+end
+
+g_oran.update = function(val, dt)
+  if 244 - DOTS < 60 and LEVEL < 3 then return end
+val.timer = val.timer  + dt
+
+if val.state == 'chase' then
+  val.speedCoef = levelSpec[LEVEL].ghostSpeed
+
+  if math.abs(distance(val.x, val.y, pacMan.x, pacMan.y)) > 8 then
+    val.targetX, val.targetY = round(pacMan.x), round(pacMan.y)
+  else
+    val.targetX, val.targetY = 28, 36
+  end
+
+  if val.timer >= levelSpec[LEVEL].chaseTime[val.chaseIter] then
+    val.chaseIter = val.chaseIter + 1
+    if val.chaseIter > 4 then val.chaseIter = 4 end
+    val.timer = 0
+    setState(val, 'scatter')
+  end
+elseif val.state == 'scatter' then
+  val.speedCoef = levelSpec[LEVEL].ghostSpeed
+  if val.timer >= levelSpec[LEVEL].scatterTime[val.scatterIter] then
+    val.scatterIter = val.scatterIter + 1
+    if val.scatterIter > 4 then val.scatterIter = 4 end
+    val.timer = 0
+    setState(val, 'chase')
+  end
+  val.targetX, val.targetY = 28, 36
+elseif val.state == 'fright' then
+  val.speedCoef =levelSpec[LEVEL].ghostFrightSpeed
+  if val.timer >= levelSpec[LEVEL].frightTime then
+    pacMan.speedCoef = levelSpec[LEVEL].pacManSpeed
+    val.timer = 0
+    val.blink = false
+    val.blinkTime = 0
+    setState(val, 'chase')
+  elseif val.timer >= levelSpec[LEVEL].frightTime - 2 then
+    val.blink = true
+    val.blinkTime = val.blinkTime + 3*dt
+  end
+elseif val.state == 'exitHome' then
+  if round(val.x) == val.targetX and round(val.y) == val.targetY then
+  val.timer = 0
+  setState(val, 'scatter')
+  end
+  val.targetX, val.targetY = 15, 15
+end
+update(val, dt)
+end
+
+g_oran.init = function(val)
+val.startX=16
+val.startY=18
+val.x=16
+val.y=19
+val.timer = 0
+val.dirX = 0
+val.dirY = 0
+val.direction = "up"
+val.animDir = "up"
+val.curAtlas = "atlas"
+val.keyframe=1
+val.angle=0
+val.scaleSignX= 1
+val.scaleSignY= 1
+val.state = "exitHome"
+val.targetX = 15
+val.targetY = 15
+val.speedCoef = levelSpec[LEVEL].ghostSpeed
+val.nextDecision = "up"
+val.nextX = 16
 val.nextY = 17
 val.blink = false
 val.blinkTime = 0
