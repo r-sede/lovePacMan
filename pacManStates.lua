@@ -10,6 +10,8 @@ pacMan_states.game.load = function (arg)
   LEVEL = 1
   pacMan.life = 2
   pacMan.score = 0
+  pacMan.lastScore = 0
+  pacMan.nextEarnLife = 1
   pacMan:init()
   g_red:init()
   g_pink:init()

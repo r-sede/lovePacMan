@@ -74,7 +74,8 @@ function love.load(arg)
   S_EATGHOST= love.audio.newSource('assets/sfx/pacman_eatghost.wav', 'static')
   S_EATFRUIT= love.audio.newSource('assets/sfx/pacman_eatfruit.wav', 'static')
   S_READY = love.audio.newSource('assets/sfx/pacman_intermission.wav', 'static')
-  S_DEATH_DUR = S_DEATH:getDuration('seconds')
+  S_EXTRA = love.audio.newSource('assets/sfx/pacman_extrapac.wav', 'static')
+  -- S_DEATH_DUR = S_DEATH:getDuration('seconds')
   
   getHighScore()
 

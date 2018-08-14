@@ -16,7 +16,9 @@ pacMan =
     angle=0,
     scaleSignX= 1,
     scaleSignY= 1,
-    succCatch = 0
+    succCatch = 0,
+    lastScore =0,
+    nextEarnLife = 1
   }
 pacMan.animTimer = 1 /pacMan.fps
 pacMan.atlas= love.graphics.newImage('assets/img/pacManLana.png');
@@ -54,6 +56,12 @@ function pacMan.update(val,dt)
     val:collect('bonus')
   end
 
+  if val.lastScore < val.nextEarnLife * 10000 and val.score >= val.nextEarnLife * 10000 then
+    val.life = val.life + 1
+    val.nextEarnLife = val.nextEarnLife + 1
+    S_EXTRA:play()
+  end
+  val.lastScore = val.score
 
   if(val.direction=="left") then
     if OBSTACLE[rndY][rndX-1] >0 then
