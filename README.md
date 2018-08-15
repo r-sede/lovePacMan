@@ -32,6 +32,10 @@ source: [the Pac-Man dossier](https://www.gamasutra.com/view/feature/3938/the_pa
 
 **d:** toggle debug info
 
+**m:** mute sound
+
+**space:** pause game
+
 ---
 
 ## windows:
