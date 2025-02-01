@@ -220,7 +220,7 @@ function getHighScore()
   else
     local success = love.filesystem.write('highscore.score', '0')
     if not success then
-      print("Erro ao criar o arquivo de high score.")
+      print("Error creating the high score file.")
     end
     HIGHSCORE = {0}
   end
