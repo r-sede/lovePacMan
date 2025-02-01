@@ -1,0 +1,32 @@
+name: Create Release for Love2D Project
+
+on:
+  workflow_dispatch:  # Manual trigger from the GitHub UI
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      LOVE_FILE_NAME: "pacman.love"
+    
+    steps:
+    
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    - name: Install Love2D latest
+      run: |
+        sudo apt update -y
+        sudo apt install -y love zip
+
+    - name: Package Love2D project
+      run: |
+        zip -9 -r $LOVE_FILE_NAME . -x "*.git*" "*.DS_Store*"
+    
+    - name: Upload release assets
+      uses: softprops/action-gh-release@v2
+      with:
+        files: ${{ env.LOVE_FILE_NAME }}
