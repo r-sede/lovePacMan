@@ -214,14 +214,12 @@ function linesFrom(file)
 end
 
 function getHighScore()
-  if love.filesystem.getInfo('highscore.score') then
-    local contents = love.filesystem.read('highscore.score')
-    HIGHSCORE = { tonumber(contents) or 0 }
+  if fileExists( 'highscore.score' ) then
+    HIGHSCORE = linesFrom('highscore.score')
   else
-    local success = love.filesystem.write('highscore.score', '0')
-    if not success then
-      print("Error creating the high score file.")
-    end
+    local f = io.open('highscore.score', 'w')
+    f:write('0')
+    f:close()
     HIGHSCORE = {0}
   end
 end
